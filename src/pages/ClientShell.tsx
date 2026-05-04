@@ -49,7 +49,9 @@ export default function ClientShell() {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <Link to="/app/client">Your invoices</Link>
+        <Link to="/app/client" className="link-inline">
+          Your invoices
+        </Link>
         <button type="button" className="btn btn-ghost" onClick={logout}>
           Log out
         </button>

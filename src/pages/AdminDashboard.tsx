@@ -234,6 +234,12 @@ export default function AdminDashboard() {
           bankAccountName: org.bank_account_name,
           bsb: org.bsb,
           accountNumber: org.account_number,
+          tradingName: org.trading_name,
+          legalAddress: org.legal_address,
+          abn: org.abn,
+          contactEmail: org.contact_email,
+          contactPhone: org.contact_phone,
+          invoiceLabel: org.invoice_label,
         }),
       })
       setOrg(r.organization)
@@ -268,7 +274,7 @@ export default function AdminDashboard() {
               ['clients', 'Clients'],
               ['invoices', 'Invoices'],
               ['schedules', 'Recurring'],
-              ['settings', 'PayID & bank'],
+              ['settings', 'Legal & payments'],
             ] as const
           ).map(([k, label]) => (
             <button
@@ -315,7 +321,7 @@ export default function AdminDashboard() {
               </button>
             </form>
             {created ? (
-              <div className="panel" style={{ marginTop: '1rem', background: 'var(--surface)' }}>
+              <div className="panel-notice">
                 <p className="success">Client created.</p>
                 {created.temporaryPassword ? (
                   <p>
@@ -325,7 +331,7 @@ export default function AdminDashboard() {
                 <p>
                   <strong>Portal token (share via your own channel or rotate for a link):</strong>
                 </p>
-                <pre style={{ fontSize: '0.75rem' }}>{created.portalToken}</pre>
+                <pre>{created.portalToken}</pre>
                 <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                   Use “Share portal link” to generate a URL and QR clients can scan.
                 </p>
@@ -600,15 +606,64 @@ export default function AdminDashboard() {
 
         {tab === 'settings' ? (
           <div className="panel">
-            <h2>PayID & bank details (shown on invoices)</h2>
+            <h2>Legal entity & invoice letterhead</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 0 }}>
+              Invoice numbers and issue dates are generated automatically when you issue an invoice.
+            </p>
             <form onSubmit={saveOrg}>
               <label className="field">
-                Brand name
+                Legal / business name (letterhead)
                 <input
                   value={org.brand_name || ''}
                   onChange={(e) => setOrg({ ...org, brand_name: e.target.value })}
                 />
               </label>
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                Trading name
+                <input
+                  value={org.trading_name || ''}
+                  onChange={(e) => setOrg({ ...org, trading_name: e.target.value })}
+                />
+              </label>
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                Business address
+                <textarea
+                  rows={2}
+                  value={org.legal_address || ''}
+                  onChange={(e) => setOrg({ ...org, legal_address: e.target.value })}
+                />
+              </label>
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                ABN
+                <input
+                  value={org.abn || ''}
+                  onChange={(e) => setOrg({ ...org, abn: e.target.value })}
+                />
+              </label>
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                Contact email
+                <input
+                  type="email"
+                  value={org.contact_email || ''}
+                  onChange={(e) => setOrg({ ...org, contact_email: e.target.value })}
+                />
+              </label>
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                Contact phone
+                <input
+                  value={org.contact_phone || ''}
+                  onChange={(e) => setOrg({ ...org, contact_phone: e.target.value })}
+                />
+              </label>
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                Document title (use “Tax invoice” only if you are GST-registered)
+                <input
+                  value={org.invoice_label || ''}
+                  onChange={(e) => setOrg({ ...org, invoice_label: e.target.value })}
+                  placeholder="Invoice"
+                />
+              </label>
+              <h3 style={{ marginTop: '1.25rem', fontSize: '1rem' }}>PayID & bank</h3>
               <label className="field" style={{ marginTop: '0.5rem' }}>
                 PayID
                 <input

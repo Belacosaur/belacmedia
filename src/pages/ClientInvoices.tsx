@@ -42,7 +42,9 @@ export default function ClientInvoices() {
               <td>{(i.amount_cents / 100).toFixed(2)} AUD</td>
               <td>{i.due_date}</td>
               <td>
-                <Link to={`/app/client/invoices/${i.id}`}>View / pay</Link>
+                <Link to={`/app/client/invoices/${i.id}`} className="link-inline">
+                  View / pay
+                </Link>
               </td>
             </tr>
           ))}

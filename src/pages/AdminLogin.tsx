@@ -68,7 +68,9 @@ export default function AdminLogin() {
             </button>
           </form>
           <p style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
-            <Link to="/app/admin/setup">First-time admin setup</Link>
+            <Link to="/app/admin/setup" className="link-inline">
+              First-time admin setup
+            </Link>
           </p>
         </div>
       </main>

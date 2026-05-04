@@ -127,7 +127,9 @@ export default function ClientInvoiceDetail() {
       <div className="panel">
         {error ? <p className="error">{error}</p> : <p>Loading…</p>}
         <p>
-          <Link to="/app/client">Back</Link>
+          <Link to="/app/client" className="link-inline">
+            Back
+          </Link>
         </p>
       </div>
     )
@@ -141,7 +143,9 @@ export default function ClientInvoiceDetail() {
   return (
     <div className="panel">
       <p>
-        <Link to="/app/client">← All invoices</Link>
+        <Link to="/app/client" className="link-inline">
+          ← All invoices
+        </Link>
       </p>
       <h2>{invoice.invoice_number}</h2>
       {error ? <p className="error">{error}</p> : null}

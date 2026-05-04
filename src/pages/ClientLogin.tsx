@@ -71,7 +71,9 @@ export default function ClientLogin() {
             </button>
           </form>
           <p style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
-            <Link to="/app/client/magic">Have a portal link instead?</Link>
+            <Link to="/app/client/magic" className="link-inline">
+              Have a portal link instead?
+            </Link>
           </p>
         </div>
       </main>
