@@ -1,0 +1,49 @@
+:root {
+  --font-sans: 'DM Sans', system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --text-heading: #0c0a09;
+  --text-body: #44403c;
+  --text-muted: #78716c;
+  --border: #e7e5e4;
+  --surface: #fafaf9;
+  --accent: #c2410c;
+  --accent-glow: rgba(194, 65, 12, 0.25);
+  --cta-fg: #fffaf5;
+
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-body);
+  background: var(--surface);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-heading: #fafaf9;
+    --text-body: #a8a29e;
+    --text-muted: #78716c;
+    --border: #292524;
+    --surface: #0c0a09;
+    --accent: #ea580c;
+    --accent-glow: rgba(234, 88, 12, 0.35);
+    --cta-fg: #0c0a09;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+#root {
+  min-height: 100svh;
+}
