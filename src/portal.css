@@ -1,0 +1,160 @@
+.portal-page {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+}
+
+.portal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 3vw, 1.5rem);
+  border-bottom: 1px solid var(--border);
+}
+
+.portal-header a {
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.portal-main {
+  flex: 1;
+  padding: clamp(1rem, 3vw, 2rem);
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.panel h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  font-family: var(--font-display);
+  color: var(--text-heading);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+label.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-heading);
+}
+
+button.btn,
+a.btn {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: var(--accent);
+  color: var(--cta-fg);
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+button.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.btn-ghost,
+a.btn-ghost {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+table.data th,
+table.data td {
+  text-align: left;
+  padding: 0.5rem 0.35rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.tabs button {
+  font: inherit;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-body);
+}
+
+.tabs button.active {
+  background: var(--accent);
+  color: var(--cta-fg);
+  border-color: var(--accent);
+}
+
+.error {
+  color: #b91c1c;
+  font-size: 0.875rem;
+  margin: 0.25rem 0;
+}
+
+.success {
+  color: #15803d;
+  font-size: 0.875rem;
+}
+
+.qr-wrap {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.qr-wrap pre {
+  margin: 0;
+  font-size: 0.75rem;
+  word-break: break-all;
+  max-width: 100%;
+  white-space: pre-wrap;
+}

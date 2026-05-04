@@ -9,6 +9,29 @@
   border-bottom: 1px solid var(--border);
 }
 
+.header-with-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.portal-entry {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.portal-entry:hover {
+  border-color: var(--accent);
+}
+
 .wordmark {
   display: inline-flex;
   align-items: baseline;
