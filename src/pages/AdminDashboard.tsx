@@ -36,6 +36,23 @@ type Schedule = {
 
 type Template = { key: string; label: string; description: string }
 
+type CustomLineRow = { id: string; description: string; quantity: string; unitAud: string }
+
+function newCustomLine(): CustomLineRow {
+  return {
+    id: globalThis.crypto?.randomUUID?.() ?? String(Math.random()),
+    description: '',
+    quantity: '1',
+    unitAud: '',
+  }
+}
+
+function audToCents(aud: string): number {
+  const n = Number.parseFloat(aud.replace(/[^0-9.-]/g, ''))
+  if (!Number.isFinite(n)) return 0
+  return Math.round(n * 100)
+}
+
 function defaultDueDate() {
   const d = new Date()
   d.setDate(d.getDate() + 14)
@@ -70,6 +87,9 @@ export default function AdminDashboard() {
     clientId: '',
     dueDate: defaultDueDate(),
     templateKey: 'default',
+    mode: 'template' as 'template' | 'custom',
+    invoiceDescription: '',
+    customLines: [newCustomLine()],
   }))
 
   const [schForm, setSchForm] = useState(() => ({
@@ -175,20 +195,51 @@ export default function AdminDashboard() {
   async function createInvoice(e: React.FormEvent) {
     e.preventDefault()
     try {
-      await apiJson('/api/admin/invoices', {
-        method: 'POST',
-        body: JSON.stringify({
-          clientId: invForm.clientId,
-          dueDate: invForm.dueDate,
-          templateKey: invForm.templateKey,
-        }),
-      })
+      if (invForm.mode === 'custom') {
+        const lineItems = invForm.customLines
+          .map((row) => ({
+            description: row.description.trim(),
+            quantity: Math.max(0, Number.parseFloat(row.quantity) || 0),
+            unitPriceCents: audToCents(row.unitAud),
+          }))
+          .filter((r) => r.description && r.quantity > 0 && r.unitPriceCents > 0)
+        if (!lineItems.length) {
+          setError('Add at least one line with a description, quantity, and unit price (AUD).')
+          return
+        }
+        await apiJson('/api/admin/invoices', {
+          method: 'POST',
+          body: JSON.stringify({
+            clientId: invForm.clientId,
+            dueDate: invForm.dueDate,
+            description: invForm.invoiceDescription.trim() || null,
+            lineItems,
+          }),
+        })
+      } else {
+        await apiJson('/api/admin/invoices', {
+          method: 'POST',
+          body: JSON.stringify({
+            clientId: invForm.clientId,
+            dueDate: invForm.dueDate,
+            templateKey: invForm.templateKey,
+            description: invForm.invoiceDescription.trim() || null,
+          }),
+        })
+      }
+      setError('')
       load()
       alert('Invoice created')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed')
     }
   }
+
+  const customLineTotalCents = invForm.customLines.reduce((sum, row) => {
+    const q = Math.max(0, Number.parseFloat(row.quantity) || 0)
+    const c = audToCents(row.unitAud)
+    return sum + Math.round(q * c)
+  }, 0)
 
   async function createSchedule(e: React.FormEvent) {
     e.preventDefault()
@@ -381,8 +432,25 @@ export default function AdminDashboard() {
 
         {tab === 'invoices' ? (
           <div className="panel">
-            <h2>Create invoice from template</h2>
+            <h2>Create invoice</h2>
             <form onSubmit={createInvoice}>
+              <div className="invoice-mode-toggle" role="group" aria-label="Invoice source">
+                <button
+                  type="button"
+                  className={invForm.mode === 'template' ? 'active' : ''}
+                  onClick={() => setInvForm((f) => ({ ...f, mode: 'template' }))}
+                >
+                  Use template
+                </button>
+                <button
+                  type="button"
+                  className={invForm.mode === 'custom' ? 'active' : ''}
+                  onClick={() => setInvForm((f) => ({ ...f, mode: 'custom' }))}
+                >
+                  Custom lines
+                </button>
+              </div>
+
               <div className="row">
                 <label className="field">
                   Client
@@ -408,26 +476,148 @@ export default function AdminDashboard() {
                     required
                   />
                 </label>
-                <label className="field">
-                  Template
-                  <select
-                    value={invForm.templateKey}
-                    onChange={(e) => setInvForm({ ...invForm, templateKey: e.target.value })}
-                  >
-                    {templates.map((t) => (
-                      <option key={t.key} value={t.key}>
-                        {t.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button type="submit" className="btn">
-                  Issue invoice
-                </button>
               </div>
+
+              <label className="field" style={{ marginTop: '0.5rem' }}>
+                Invoice note (optional, shown on PDF)
+                <input
+                  value={invForm.invoiceDescription}
+                  onChange={(e) => setInvForm({ ...invForm, invoiceDescription: e.target.value })}
+                  placeholder="e.g. Project name or period"
+                />
+              </label>
+
+              {invForm.mode === 'template' ? (
+                <div className="row" style={{ marginTop: '0.75rem' }}>
+                  <label className="field">
+                    Template
+                    <select
+                      value={invForm.templateKey}
+                      onChange={(e) => setInvForm({ ...invForm, templateKey: e.target.value })}
+                    >
+                      {templates.map((t) => (
+                        <option key={t.key} value={t.key}>
+                          {t.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button type="submit" className="btn">
+                    Issue invoice
+                  </button>
+                </div>
+              ) : (
+                <div className="custom-lines-block">
+                  <p className="custom-lines-hint">
+                    Enter each line: description, quantity, and unit price in AUD (e.g.{' '}
+                    <code>1500</code> or <code>1500.50</code>). Empty rows are ignored.
+                  </p>
+                  <table className="data custom-lines-table">
+                    <thead>
+                      <tr>
+                        <th>Description</th>
+                        <th style={{ width: '5.5rem' }}>Qty</th>
+                        <th style={{ width: '7rem' }}>Unit AUD</th>
+                        <th style={{ width: '4rem' }} />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {invForm.customLines.map((row, idx) => (
+                        <tr key={row.id}>
+                          <td>
+                            <input
+                              aria-label={`Line ${idx + 1} description`}
+                              value={row.description}
+                              onChange={(e) => {
+                                const v = e.target.value
+                                setInvForm((f) => ({
+                                  ...f,
+                                  customLines: f.customLines.map((l) =>
+                                    l.id === row.id ? { ...l, description: v } : l,
+                                  ),
+                                }))
+                              }}
+                              placeholder="e.g. Video edit — March"
+                            />
+                          </td>
+                          <td>
+                            <input
+                              aria-label={`Line ${idx + 1} quantity`}
+                              type="text"
+                              inputMode="decimal"
+                              value={row.quantity}
+                              onChange={(e) => {
+                                const v = e.target.value
+                                setInvForm((f) => ({
+                                  ...f,
+                                  customLines: f.customLines.map((l) =>
+                                    l.id === row.id ? { ...l, quantity: v } : l,
+                                  ),
+                                }))
+                              }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              aria-label={`Line ${idx + 1} unit AUD`}
+                              type="text"
+                              inputMode="decimal"
+                              value={row.unitAud}
+                              onChange={(e) => {
+                                const v = e.target.value
+                                setInvForm((f) => ({
+                                  ...f,
+                                  customLines: f.customLines.map((l) =>
+                                    l.id === row.id ? { ...l, unitAud: v } : l,
+                                  ),
+                                }))
+                              }}
+                              placeholder="0.00"
+                            />
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-ghost btn-icon"
+                              aria-label="Remove line"
+                              disabled={invForm.customLines.length <= 1}
+                              onClick={() =>
+                                setInvForm((f) => ({
+                                  ...f,
+                                  customLines: f.customLines.filter((l) => l.id !== row.id),
+                                }))
+                              }
+                            >
+                              ×
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <div className="custom-lines-footer">
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      onClick={() =>
+                        setInvForm((f) => ({ ...f, customLines: [...f.customLines, newCustomLine()] }))
+                      }
+                    >
+                      Add line
+                    </button>
+                    <span className="custom-lines-total">
+                      Total: {(customLineTotalCents / 100).toFixed(2)} AUD
+                    </span>
+                    <button type="submit" className="btn">
+                      Issue invoice
+                    </button>
+                  </div>
+                </div>
+              )}
             </form>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              Templates are editable in the backend under <code>invoiceTemplates.js</code>.
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+              <strong>Templates</strong> are presets in <code>invoiceTemplates.js</code>.{' '}
+              <strong>Custom lines</strong> send your own amounts to the same PDF pipeline.
             </p>
             <h2 style={{ marginTop: '1.5rem' }}>All invoices</h2>
             <table className="data">
