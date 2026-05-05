@@ -1,50 +1,14 @@
-import { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
-import { apiJson, clearToken, getToken } from '../api'
+import { clearToken } from '../api'
 import BrandLogo from '../components/BrandLogo'
 import '../portal.css'
 
 export default function ClientShell() {
   const nav = useNavigate()
-  const [ready, setReady] = useState(false)
-
-  useEffect(() => {
-    if (!getToken()) {
-      nav('/app/client/login', { replace: true })
-      return
-    }
-    let cancelled = false
-    apiJson<{ user: { role: string; name: string } }>('/api/auth/me')
-      .then((r) => {
-        if (cancelled) return
-        if (r.user.role !== 'client') {
-          clearToken()
-          nav('/app/client/login', { replace: true })
-          return
-        }
-        setReady(true)
-      })
-      .catch(() => {
-        if (cancelled) return
-        clearToken()
-        nav('/app/client/login', { replace: true })
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [nav])
 
   function logout() {
     clearToken()
     nav('/app')
-  }
-
-  if (!ready) {
-    return (
-      <div className="portal-page">
-        <main className="portal-main">Loading…</main>
-      </div>
-    )
   }
 
   return (

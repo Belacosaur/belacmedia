@@ -12,7 +12,7 @@ export default function AppHub() {
         </Link>
         <span style={{ fontWeight: 600 }}>Portal</span>
       </header>
-      <main className="portal-main">
+      <main id="main-content" className="portal-main">
         <div className="panel">
           <h2>Choose how you are signing in</h2>
           <p style={{ color: 'var(--text-muted)', marginTop: 0 }}>

@@ -25,7 +25,7 @@ export default function ClientInvoices() {
     <div className="panel">
       <h2>Your invoices & receipts</h2>
       {error ? <p className="error">{error}</p> : null}
-      <table className="data">
+      <table className="data client-invoices-table">
         <thead>
           <tr>
             <th>Invoice</th>

@@ -61,3 +61,18 @@ export async function apiBlob(path: string): Promise<Blob> {
   }
   return res.blob()
 }
+
+export type ContactLeadInput = {
+  name: string
+  email: string
+  company: string | null
+  message: string
+  website: string | null
+}
+
+export async function submitContactLead(input: ContactLeadInput) {
+  return apiJson<{ ok: boolean; leadId: string }>('/api/public/contact', {
+    method: 'POST',
+    body: JSON.stringify(input),
+  })
+}
