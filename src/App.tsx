@@ -8,6 +8,8 @@ import ClientInvoiceDetail from './pages/ClientInvoiceDetail'
 import ClientInvoices from './pages/ClientInvoices'
 import ClientLogin from './pages/ClientLogin'
 import ClientMagic from './pages/ClientMagic'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 import ClientShell from './pages/ClientShell'
 import MarketingHome from './pages/MarketingHome'
 
@@ -19,6 +21,8 @@ export default function App() {
       <Route path="/app/admin/setup" element={<AdminSetup />} />
       <Route path="/app/admin/login" element={<AdminLogin />} />
       <Route path="/app/admin" element={<AdminDashboard />} />
+      <Route path="/app/forgot-password" element={<ForgotPassword />} />
+      <Route path="/app/reset-password" element={<ResetPassword />} />
       <Route path="/app/client/login" element={<ClientLogin />} />
       <Route path="/app/client/magic" element={<ClientMagic />} />
       <Route path="/app/client" element={<ClientShell />}>

@@ -1,11 +1,15 @@
 import { Link } from 'react-router-dom'
+import BrandLogo from '../components/BrandLogo'
 import '../portal.css'
 
 export default function AppHub() {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <Link to="/">← Belac Media</Link>
+        <Link to="/" className="portal-header-brand" aria-label="Belac Media home">
+          <BrandLogo variant="header" decorative />
+          <span className="portal-header-brand-text">Home</span>
+        </Link>
         <span style={{ fontWeight: 600 }}>Portal</span>
       </header>
       <main className="portal-main">

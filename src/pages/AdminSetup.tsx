@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiJson, setToken } from '../api'
+import BrandLogo from '../components/BrandLogo'
 import '../portal.css'
 
 export default function AdminSetup() {
@@ -32,11 +33,17 @@ export default function AdminSetup() {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <Link to="/app">← Portal</Link>
+        <Link to="/app" className="portal-header-brand" aria-label="Back to portal">
+          <BrandLogo variant="header" decorative />
+          <span className="portal-header-brand-text">Portal</span>
+        </Link>
       </header>
       <main className="portal-main">
         <div className="panel" style={{ maxWidth: 420 }}>
-          <h2>Create first admin</h2>
+          <div style={{ textAlign: 'center' }}>
+            <BrandLogo variant="panel" />
+          </div>
+          <h2 style={{ marginTop: '0.35rem' }}>Create first admin</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
             This only works while no admin account exists. Use a strong password.
           </p>

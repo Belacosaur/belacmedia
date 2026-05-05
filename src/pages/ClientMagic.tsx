@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { apiJson, setToken } from '../api'
+import BrandLogo from '../components/BrandLogo'
 import '../portal.css'
 
 export default function ClientMagic() {
@@ -61,7 +62,10 @@ export default function ClientMagic() {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <Link to="/app">← Portal</Link>
+        <Link to="/app" className="portal-header-brand" aria-label="Back to portal">
+          <BrandLogo variant="header" decorative />
+          <span className="portal-header-brand-text">Portal</span>
+        </Link>
       </header>
       <main className="portal-main">
         <div className="panel" style={{ maxWidth: 480 }}>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import { apiJson, clearToken, getToken } from '../api'
+import BrandLogo from '../components/BrandLogo'
 import '../portal.css'
 
 export default function ClientShell() {
@@ -49,9 +50,14 @@ export default function ClientShell() {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <Link to="/app/client" className="link-inline">
-          Your invoices
-        </Link>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
+          <Link to="/" aria-label="Belac Media home" style={{ lineHeight: 0 }}>
+            <BrandLogo variant="header" decorative />
+          </Link>
+          <Link to="/app/client" className="link-inline">
+            Your invoices
+          </Link>
+        </div>
         <button type="button" className="btn btn-ghost" onClick={logout}>
           Log out
         </button>

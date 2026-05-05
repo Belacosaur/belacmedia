@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { apiJson } from '../api'
+import { formatAudCents } from '../formatMoney'
 
 type Invoice = {
   id: string
@@ -39,7 +40,7 @@ export default function ClientInvoices() {
             <tr key={i.id}>
               <td>{i.invoice_number}</td>
               <td>{i.status}</td>
-              <td>{(i.amount_cents / 100).toFixed(2)} AUD</td>
+              <td>{formatAudCents(i.amount_cents)}</td>
               <td>{i.due_date}</td>
               <td>
                 <Link to={`/app/client/invoices/${i.id}`} className="link-inline">

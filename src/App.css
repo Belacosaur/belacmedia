@@ -51,28 +51,17 @@
   box-shadow: 0 0 0 4px var(--accent-ring);
 }
 
-a.wordmark {
-  color: var(--text-heading);
-}
-
-.wordmark {
+a.header-brand {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.3rem;
+  align-items: center;
   text-decoration: none;
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 1.125rem;
-  letter-spacing: -0.03em;
+  line-height: 0;
 }
 
-.wordmark-primary {
-  color: var(--text-heading);
-}
-
-.wordmark-secondary {
-  color: var(--accent);
-  font-weight: 600;
+a.header-brand:focus-visible {
+  outline: none;
+  border-radius: 12px;
+  box-shadow: 0 0 0 4px var(--accent-ring);
 }
 
 .main {

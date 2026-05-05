@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiJson, setToken } from '../api'
+import BrandLogo from '../components/BrandLogo'
 import '../portal.css'
 
 export default function AdminLogin() {
@@ -38,11 +39,17 @@ export default function AdminLogin() {
   return (
     <div className="portal-page">
       <header className="portal-header">
-        <Link to="/app">← Portal</Link>
+        <Link to="/app" className="portal-header-brand" aria-label="Back to portal">
+          <BrandLogo variant="header" decorative />
+          <span className="portal-header-brand-text">Portal</span>
+        </Link>
       </header>
       <main className="portal-main">
         <div className="panel" style={{ maxWidth: 400 }}>
-          <h2>Admin sign in</h2>
+          <div style={{ textAlign: 'center' }}>
+            <BrandLogo variant="panel" />
+          </div>
+          <h2 style={{ marginTop: '0.35rem' }}>Admin sign in</h2>
           <form onSubmit={onSubmit}>
             <label className="field">
               Email
@@ -68,6 +75,11 @@ export default function AdminLogin() {
             </button>
           </form>
           <p style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
+            <Link to="/app/forgot-password" className="link-inline">
+              Forgot password?
+            </Link>
+          </p>
+          <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
             <Link to="/app/admin/setup" className="link-inline">
               First-time admin setup
             </Link>

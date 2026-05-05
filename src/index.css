@@ -77,3 +77,55 @@ code {
   padding: 0.15em 0.4em;
   border-radius: 6px;
 }
+
+/* /public/belacmedia.png — dark plate so black/gold logo reads on light UI */
+.brand-logo {
+  display: block;
+  height: auto;
+  width: auto;
+  max-height: 34px;
+  border-radius: 10px;
+  background: #0a0a0a;
+  padding: 4px 10px;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-logo--header {
+  max-height: 36px;
+}
+
+.brand-logo--hero {
+  max-height: 92px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 20px;
+  border-radius: 14px;
+}
+
+.brand-logo--panel {
+  max-height: 52px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0.25rem;
+  padding: 6px 14px;
+}
+
+.portal-header-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.portal-header-brand:hover .portal-header-brand-text {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.portal-header-brand-text {
+  font-weight: 600;
+  font-size: 0.9375rem;
+  letter-spacing: -0.015em;
+  color: var(--accent);
+}

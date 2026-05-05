@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
+import BrandLogo from '../components/BrandLogo'
 import '../App.css'
 
 export default function MarketingHome() {
   return (
     <div className="page">
       <header className="header header-with-actions">
-        <Link to="/" className="wordmark" aria-label="Belac Media home">
-          <span className="wordmark-primary">Belac</span>
-          <span className="wordmark-secondary">Media</span>
+        <Link to="/" className="header-brand" aria-label="Belac Media home">
+          <BrandLogo variant="header" decorative />
         </Link>
         <Link to="/app" className="portal-entry">
           Client portal
@@ -16,6 +16,7 @@ export default function MarketingHome() {
 
       <main className="main">
         <section className="hero" aria-labelledby="hero-heading">
+          <BrandLogo variant="hero" />
           <p className="eyebrow">Narrative · production · presence</p>
           <h1 id="hero-heading">Stories worth telling</h1>
           <p className="lead">
