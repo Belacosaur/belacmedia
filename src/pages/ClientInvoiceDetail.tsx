@@ -90,21 +90,6 @@ export default function ClientInvoiceDetail() {
       })
   }, [id, paidFlag, sessionId, setParams, load])
 
-  async function payStripe() {
-    if (!id) return
-    setBusy(true)
-    try {
-      const r = await apiJson<{ url: string }>(`/api/client/invoices/${id}/checkout`, {
-        method: 'POST',
-      })
-      window.location.href = r.url
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Stripe unavailable')
-    } finally {
-      setBusy(false)
-    }
-  }
-
   async function offlinePaid() {
     if (!id) return
     setBusy(true)
@@ -170,14 +155,8 @@ export default function ClientInvoiceDetail() {
     )
   }
 
-  const canPayOnline =
-    invoice.status === 'issued' || invoice.status === 'awaiting_proof'
   const canOffline = invoice.status === 'issued'
   const paid = invoice.status === 'paid'
-
-  const stripeTotal =
-    invoice.stripe_checkout_amount_cents ?? invoice.amount_cents
-  const cardPremium = stripeTotal > invoice.amount_cents
 
   return (
     <div className="panel">
@@ -208,16 +187,6 @@ export default function ClientInvoiceDetail() {
         ) : (
           <>
             <strong>Due (PayID / transfer):</strong> {formatAudCents(invoice.amount_cents)}
-            {cardPremium ? (
-              <>
-                {' '}
-                · <strong>Due if paying by card:</strong> {formatAudCents(stripeTotal)}
-                <span style={{ fontWeight: 400, color: 'var(--text-muted)' }}>
-                  {' '}
-                  (includes card processing)
-                </span>
-              </>
-            ) : null}
             {' · '}
           </>
         )}
@@ -266,12 +235,6 @@ export default function ClientInvoiceDetail() {
               </tr>
             </tfoot>
           </table>
-          {!paid && cardPremium ? (
-            <p style={{ marginTop: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Stripe checkout is charged at {formatAudCents(stripeTotal)} so card processing is
-              included; PayID or bank transfer is {formatAudCents(invoice.amount_cents)}.
-            </p>
-          ) : null}
         </div>
       ) : null}
 
@@ -285,19 +248,6 @@ export default function ClientInvoiceDetail() {
           </button>
         ) : null}
       </div>
-
-      {!paid && canPayOnline ? (
-        <div style={{ marginTop: '1.5rem' }}>
-          <h3 style={{ fontSize: '1rem' }}>Pay with Stripe</h3>
-          <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
-            You will be charged {formatAudCents(stripeTotal)}
-            {cardPremium ? ' (includes estimated card processing).' : '.'}
-          </p>
-          <button type="button" className="btn" disabled={busy} onClick={() => payStripe()}>
-            Pay {formatAudCents(stripeTotal)} with Stripe
-          </button>
-        </div>
-      ) : null}
 
       {!paid ? (
         <div style={{ marginTop: '1.5rem' }}>
