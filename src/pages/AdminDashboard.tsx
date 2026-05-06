@@ -13,13 +13,27 @@ import {
 import type { Client, Invoice, Schedule, Template } from './adminDashboardUtils'
 import '../portal.css'
 
+type ContactLead = {
+  id: string
+  name: string
+  email: string
+  company: string | null
+  message: string
+  source: string
+  ip: string | null
+  createdAt: string
+}
+
 export default function AdminDashboard() {
   const nav = useNavigate()
-  const [tab, setTab] = useState<'clients' | 'invoices' | 'schedules' | 'settings'>('clients')
+  const [tab, setTab] = useState<'contact' | 'clients' | 'invoices' | 'schedules' | 'settings'>(
+    'contact',
+  )
   const [clients, setClients] = useState<Client[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [schedules, setSchedules] = useState<Schedule[]>([])
   const [templates, setTemplates] = useState<Template[]>([])
+  const [contactLeads, setContactLeads] = useState<ContactLead[]>([])
   const [org, setOrg] = useState<Record<string, string | null>>({})
   const [error, setError] = useState('')
   const [banner, setBanner] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
@@ -60,6 +74,10 @@ export default function AdminDashboard() {
   const load = useCallback(async () => {
     setError('')
     try {
+      if (tab === 'contact') {
+        const r = await apiJson<{ leads: ContactLead[] }>('/api/admin/contact-leads')
+        setContactLeads(r.leads)
+      }
       if (tab === 'clients') {
         const r = await apiJson<{ clients: Client[] }>('/api/admin/clients')
         setClients(r.clients)
@@ -452,6 +470,7 @@ export default function AdminDashboard() {
         <div className="tabs">
           {(
             [
+              ['contact', 'Website contact'],
               ['clients', 'Clients'],
               ['invoices', 'Invoices'],
               ['schedules', 'Recurring'],
@@ -468,6 +487,54 @@ export default function AdminDashboard() {
             </button>
           ))}
         </div>
+
+        {tab === 'contact' ? (
+          <div className="panel">
+            <h2>Website contact requests</h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: 0 }}>
+              Submissions from the marketing site contact form ({contactLeads.length} loaded, newest
+              first).
+            </p>
+            {contactLeads.length === 0 ? (
+              <p className="panel-notice">No submissions yet.</p>
+            ) : (
+              <div style={{ overflowX: 'auto', marginTop: '1rem' }}>
+                <table className="data clients-table contact-leads-table">
+                  <thead>
+                    <tr>
+                      <th>Received</th>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Company</th>
+                      <th>Message</th>
+                      <th>Source</th>
+                      <th>IP</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {contactLeads.map((lead) => (
+                      <tr key={lead.id}>
+                        <td style={{ whiteSpace: 'nowrap', fontSize: '0.85rem' }}>
+                          {new Date(lead.createdAt).toLocaleString()}
+                        </td>
+                        <td>{lead.name}</td>
+                        <td>
+                          <a href={`mailto:${lead.email}`}>{lead.email}</a>
+                        </td>
+                        <td>{lead.company || '—'}</td>
+                        <td className="contact-lead-message">{lead.message}</td>
+                        <td style={{ fontSize: '0.85rem' }}>{lead.source}</td>
+                        <td style={{ fontSize: '0.8rem', fontFamily: 'monospace' }}>
+                          {lead.ip || '—'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        ) : null}
 
         {tab === 'clients' ? (
           <div className="panel">
