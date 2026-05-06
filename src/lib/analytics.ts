@@ -1,8 +1,8 @@
 declare global {
   interface Window {
-    /** Shared queue used by both GA4 gtag and Google Tag Manager */
+    /** Shared queue used by GA4 gtag and optionally GTM */
     dataLayer?: unknown[]
-    /** Google Analytics 4 / gtag.js command function (defined when GA4 is enabled) */
+    /** Google Analytics 4 / gtag.js */
     gtag?: (...args: unknown[]) => void
   }
 }
@@ -18,15 +18,23 @@ function pushDataLayer(payload: Record<string, unknown>) {
   window.dataLayer.push(payload)
 }
 
+function gtagJsAlreadyLoaded(gaId: string): boolean {
+  return [...document.querySelectorAll('script[src*="googletagmanager.com/gtag/js"]')].some(
+    (el) =>
+      el.getAttribute('src')?.includes(encodeURIComponent(gaId)) ||
+      el.getAttribute('src')?.includes(gaId) ||
+      false,
+  )
+}
+
 /**
  * Initialise analytics once at app startup.
  *
- * - If `VITE_GA_MEASUREMENT_ID` is set (GA4, format `G-XXXXXXXXXX`), loads `gtag.js` and sends SPA
- *   page views via {@link trackPage}. Custom events use {@link trackEvent}.
- * - Else if `VITE_GTM_ID` is set, loads Google Tag Manager only (configure GA4 inside GTM).
- * - Do not set both for duplicate measurement; prefer GA4 env **or** GTM, not both.
+ * **Direct GA4 (recommended):** Set `VITE_GA_MEASUREMENT_ID`. The official `gtag.js` snippet is
+ * injected into `index.html` at **build/dev time** via `vite.config.ts`. This function only fills in
+ * dynamic loading when the snippet is absent (e.g. tests).
  *
- * Optional: `VITE_GA_DEBUG=true` enables GA4 `debug_mode` (verbose logging to DebugView).
+ * **GTM:** Set `VITE_GTM_ID` only if you load GA4 through Tag Manager instead (no direct GA env).
  */
 export function initAnalytics(): void {
   if (typeof window === 'undefined') return
@@ -34,42 +42,32 @@ export function initAnalytics(): void {
   const gaId = import.meta.env.VITE_GA_MEASUREMENT_ID?.trim()
   const gtmId = import.meta.env.VITE_GTM_ID?.trim()
   const gaDebug = import.meta.env.VITE_GA_DEBUG === 'true'
-  const gtmSnippetOnPage =
-    [...document.querySelectorAll('script[src*="googletagmanager.com/gtm.js"]')].length > 0
-
-  if (import.meta.env.DEV && gaId && gtmSnippetOnPage) {
-    console.warn(
-      '[analytics] VITE_GA_MEASUREMENT_ID is set but GTM is also embedded in index.html; you may double-count. Use one primary path.',
-    )
-  }
 
   if (import.meta.env.DEV && gaId && gtmId) {
-    // Avoid accidental double-counting in GA when both loaders are configured.
-    // Prefer GA4-only env *or* GTM-only (with GA4 tag inside GTM).
     console.warn(
-      '[analytics] VITE_GA_MEASUREMENT_ID and VITE_GTM_ID are both set; loading GA4 only. Remove one.',
+      '[analytics] VITE_GA_MEASUREMENT_ID and VITE_GTM_ID are both set; using GA4 direct path only. Remove VITE_GTM_ID unless intentional.',
     )
   }
 
   if (gaId) {
     mode = 'ga4'
     gaMeasurementId = gaId
-
     window.dataLayer = window.dataLayer || []
-    window.gtag = function gtag(...args: unknown[]) {
-      window.dataLayer!.push(args)
+
+    if (!gtagJsAlreadyLoaded(gaId)) {
+      window.gtag = function gtag(...args: unknown[]) {
+        window.dataLayer!.push(args)
+      }
+      const script = document.createElement('script')
+      script.async = true
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`
+      document.head.appendChild(script)
+      window.gtag('js', new Date())
+      window.gtag('config', gaId, {
+        send_page_view: false,
+        ...(gaDebug ? { debug_mode: true } : {}),
+      })
     }
-
-    const script = document.createElement('script')
-    script.async = true
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`
-    document.head.appendChild(script)
-
-    window.gtag('js', new Date())
-    window.gtag('config', gaId, {
-      send_page_view: false,
-      ...(gaDebug ? { debug_mode: true } : {}),
-    })
     return
   }
 
@@ -91,20 +89,11 @@ export function initAnalytics(): void {
         gtm_id: gtmId,
       })
     }
-    return
-  }
-
-  // GTM snippet in index.html (no VITE_GTM_ID): tag SPA measurement mode for clarity.
-  if (!gaId && gtmSnippetOnPage) {
-    mode = 'gtm'
-    window.dataLayer = window.dataLayer || []
   }
 }
 
 /**
  * SPA navigation: send a page_view with path (include query string when relevant).
- * GA4: `gtag('config', measurementId, { page_path, page_location, page_title })`.
- * GTM / fallback: `dataLayer` push compatible with common GA4 GTM tags.
  */
 export function trackPage(path: string): void {
   if (typeof window === 'undefined') return
