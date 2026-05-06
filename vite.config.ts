@@ -55,7 +55,7 @@ function seoFilesPlugin(mode: string): Plugin {
       const origin = (env.VITE_SITE_ORIGIN || 'https://belacmedia.com').replace(/\/$/, '')
       const distDir = path.resolve(process.cwd(), 'dist')
       const lastmod = resolveSitemapLastmod(env)
-      const paths = ['/', '/privacy', '/terms', '/brand']
+      const paths = ['/', '/privacy', '/terms', '/brand', '/seo-checker']
       let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
       xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
       for (const p of paths) {

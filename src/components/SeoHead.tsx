@@ -40,6 +40,19 @@ function upsertLink(rel: string, href: string) {
   el.setAttribute('href', href)
 }
 
+function upsertAlternateHrefLang(lang: string, href: string) {
+  const selector = `link[rel="alternate"][hreflang="${lang}"][data-seo="1"]`
+  let el = document.head.querySelector(selector) as HTMLLinkElement | null
+  if (!el) {
+    el = document.createElement('link')
+    el.setAttribute('rel', 'alternate')
+    el.setAttribute('hreflang', lang)
+    el.setAttribute('data-seo', '1')
+    document.head.appendChild(el)
+  }
+  el.setAttribute('href', href)
+}
+
 function replaceJsonLd(payloads: object[]) {
   document.head.querySelectorAll('script[data-seo-jsonld]').forEach((n) => n.remove())
   payloads.forEach((obj, i) => {
@@ -73,6 +86,7 @@ export default function SeoHead() {
     upsertMeta('property', 'og:title', seo.ogTitle ?? seo.title)
     upsertMeta('property', 'og:description', seo.ogDescription ?? seo.description)
     upsertMeta('property', 'og:url', canonical)
+    upsertMeta('property', 'og:site_name', 'Belac Media')
     upsertMeta('property', 'og:image', ogImage)
     upsertMeta('property', 'og:image:width', String(OG_IMAGE_META.width))
     upsertMeta('property', 'og:image:height', String(OG_IMAGE_META.height))
@@ -82,6 +96,10 @@ export default function SeoHead() {
     upsertMeta('name', 'twitter:title', seo.ogTitle ?? seo.title)
     upsertMeta('name', 'twitter:description', seo.ogDescription ?? seo.description)
     upsertMeta('name', 'twitter:image', ogImage)
+    upsertMeta('name', 'twitter:site', '@belacmedia')
+
+    upsertAlternateHrefLang('en-AU', canonical)
+    upsertAlternateHrefLang('x-default', canonical)
 
     replaceJsonLd(buildJsonLd(origin))
   }, [location.pathname])

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { apiJson, setToken } from '../api'
 import BrandLogo from '../components/BrandLogo'
@@ -37,10 +37,10 @@ export default function PortalLogin() {
 
   const resetOk = Boolean((location.state as { resetOk?: boolean } | null)?.resetOk)
 
-  function resolvePostLoginPath(role: LoginRole) {
+  const resolvePostLoginPath = useCallback((role: LoginRole) => {
     if (nextParam && nextParam.startsWith('/app/')) return nextParam
     return role === 'admin' ? '/app/admin' : '/app/client'
-  }
+  }, [nextParam])
 
   useEffect(() => {
     const cid = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -99,7 +99,7 @@ export default function PortalLogin() {
     return () => {
       cancelled = true
     }
-  }, [nav, nextParam])
+  }, [nav, resolvePostLoginPath])
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()

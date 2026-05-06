@@ -67,6 +67,7 @@ export function buildHeadInnerHtml(siteOrigin: string, pathname: string): string
     `<meta property="og:title" content="${escapeHtmlAttr(seo.ogTitle ?? seo.title)}" />`,
     `<meta property="og:description" content="${escapeHtmlAttr(seo.ogDescription ?? seo.description)}" />`,
     `<meta property="og:url" content="${escapeHtmlAttr(canonical)}" />`,
+    `<meta property="og:site_name" content="Belac Media" />`,
     `<meta property="og:image" content="${escapeHtmlAttr(ogImage)}" />`,
     `<meta property="og:image:width" content="${OG_IMAGE_META.width}" />`,
     `<meta property="og:image:height" content="${OG_IMAGE_META.height}" />`,
@@ -75,6 +76,9 @@ export function buildHeadInnerHtml(siteOrigin: string, pathname: string): string
     `<meta name="twitter:title" content="${escapeHtmlAttr(seo.ogTitle ?? seo.title)}" />`,
     `<meta name="twitter:description" content="${escapeHtmlAttr(seo.ogDescription ?? seo.description)}" />`,
     `<meta name="twitter:image" content="${escapeHtmlAttr(ogImage)}" />`,
+    `<meta name="twitter:site" content="@belacmedia" />`,
+    `<link rel="alternate" hreflang="en-AU" href="${escapeHtmlAttr(canonical)}" />`,
+    `<link rel="alternate" hreflang="x-default" href="${escapeHtmlAttr(canonical)}" />`,
   ]
 
   jsonLd.forEach((obj, i) => {
@@ -141,6 +145,17 @@ const PUBLIC_ROUTES: Record<string, PageSeo> = {
     ogTitle: 'Brand kit | Belac Media',
     ogDescription:
       'Logos, palette, typography, and voice guidelines for Belac Media—Perth-based premium digital studio.',
+    ogImage: DEFAULT_OG_IMAGE_PATH,
+  },
+  '/seo-checker': {
+    path: '/seo-checker',
+    title: 'Free SEO checker | Belac Media',
+    description:
+      'Run a free SEO score check for your website and get plain-English recommendations to improve search visibility.',
+    robots: 'index,follow',
+    ogTitle: 'Free SEO checker | Belac Media',
+    ogDescription:
+      'Check your website SEO score in seconds with clear, practical recommendations from Belac Media.',
     ogImage: DEFAULT_OG_IMAGE_PATH,
   },
 }
@@ -231,4 +246,4 @@ export function buildJsonLd(siteOrigin: string): object[] {
   return [org, website, service]
 }
 
-export const INDEXABLE_SITEMAP_PATHS = ['/', '/privacy', '/terms', '/brand'] as const
+export const INDEXABLE_SITEMAP_PATHS = ['/', '/privacy', '/terms', '/brand', '/seo-checker'] as const

@@ -76,3 +76,49 @@ export async function submitContactLead(input: ContactLeadInput) {
     body: JSON.stringify(input),
   })
 }
+
+export type PublicSeoCheck = {
+  inputUrl: string
+  scannedAt: string
+  score: number
+  summary: string
+  checks: Array<{
+    key: string
+    label: string
+    ok: boolean
+    plainEnglish: string
+    recommendation: string
+  }>
+  priorityActions: string[]
+}
+
+export type StoredSeoReport = {
+  id: string
+  target_url?: string
+  normalized_url: string
+  domain: string
+  score: number
+  summary: string
+  checks?: PublicSeoCheck['checks']
+  priority_actions?: string[]
+  request_email?: string | null
+  client_name?: string | null
+  source?: string
+  created_at: string
+}
+
+export async function runPublicSeoCheck(url: string, email?: string, clientName?: string) {
+  return apiJson<{ ok: boolean; reportId: string; report: PublicSeoCheck }>('/api/public/seo-check', {
+    method: 'POST',
+    body: JSON.stringify({ url, email, clientName }),
+  })
+}
+
+export async function getPublicSeoReport(id: string) {
+  return apiJson<{ ok: boolean; report: StoredSeoReport }>(`/api/public/seo-check/${encodeURIComponent(id)}`)
+}
+
+export async function listPublicSeoReportsByEmail(email: string, limit = 10) {
+  const p = new URLSearchParams({ email, limit: String(limit) })
+  return apiJson<{ ok: boolean; reports: StoredSeoReport[] }>(`/api/public/seo-check?${p.toString()}`)
+}

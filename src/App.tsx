@@ -7,6 +7,7 @@ import BrandKit from './pages/BrandKit'
 import MarketingHome from './pages/MarketingHome'
 import PortalLogin from './pages/PortalLogin'
 import PrivacyPolicy from './pages/PrivacyPolicy'
+import SeoChecker from './pages/SeoChecker'
 import Terms from './pages/Terms'
 
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
@@ -34,6 +35,7 @@ export default function App() {
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/brand" element={<BrandKit />} />
+        <Route path="/seo-checker" element={<SeoChecker />} />
         <Route path="/app" element={<Navigate to="/app/login" replace />} />
         <Route path="/app/hub" element={<AppHub />} />
         <Route path="/app/login" element={<PortalLogin />} />

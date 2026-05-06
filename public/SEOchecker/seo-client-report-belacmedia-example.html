@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Belac Media SEO Report - Example</title>
+    <style>
+      :root {
+        --brand: #19d2a2;
+        --brand-dark: #0a0a0a;
+        --ink: #111827;
+        --muted: #667085;
+        --line: #dbe2ee;
+        --bg: #f3f5f9;
+        --card: #ffffff;
+        --high: #dc2626;
+        --med: #d97706;
+        --low: #0f766e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", Inter, Arial, sans-serif;
+        padding: 24px;
+      }
+      .report {
+        max-width: 1100px;
+        margin: 0 auto;
+        background: var(--card);
+        border: 1px solid #cfd8e7;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+      .topbar {
+        background: var(--brand-dark);
+        color: white;
+        padding: 16px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+      }
+      .logos {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logos img {
+        height: 38px;
+        width: auto;
+        object-fit: contain;
+        display: block;
+      }
+      .divider {
+        width: 1px;
+        height: 30px;
+        background: rgba(255, 255, 255, 0.22);
+      }
+      .meta {
+        text-align: right;
+        font-size: 13px;
+        color: #cad3e6;
+      }
+      .content {
+        padding: 22px;
+      }
+      .kicker {
+        margin: 0;
+        color: var(--brand);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      h1 {
+        margin: 8px 0 0;
+        font-size: 38px;
+        font-family: "Noto Serif", Georgia, serif;
+      }
+      .subtitle {
+        margin-top: 8px;
+        color: var(--muted);
+        max-width: 80ch;
+      }
+      .grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .card .label {
+        color: var(--muted);
+        font-size: 12px;
+        margin: 0;
+      }
+      .card .value {
+        margin: 6px 0 0;
+        font-size: 30px;
+        font-weight: 800;
+      }
+      .value-before { color: #b7791f; }
+      .value-after { color: var(--brand); }
+      .two-col {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .section {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .section h2 {
+        margin: 0 0 10px;
+        font-size: 17px;
+      }
+      .section p {
+        margin: 0;
+        color: #344054;
+      }
+      .chart {
+        margin-top: 10px;
+        border: 1px dashed #c7d2e8;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fafcff;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 14px;
+      }
+      .table th, .table td {
+        border: 1px solid var(--line);
+        padding: 8px;
+        text-align: left;
+        vertical-align: top;
+      }
+      .table th { background: #f7f9fd; }
+      .pill {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .high { color: #fff; background: var(--high); }
+      .med { color: #fff; background: var(--med); }
+      .low { color: #fff; background: var(--low); }
+      .cta {
+        margin-top: 12px;
+        border: 1px solid #bbf0df;
+        background: #f1fffa;
+        color: #065f46;
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .cta strong { color: #064e3b; }
+      .foot {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 980px) {
+        .grid { grid-template-columns: 1fr 1fr; }
+        .two-col { grid-template-columns: 1fr; }
+      }
+      @media print {
+        body { background: #fff; padding: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <article class="report">
+      <header class="topbar">
+        <div class="logos">
+          <img src="../symbolhorizontallogo.png" alt="Belac Media" />
+          <span class="divider" aria-hidden="true"></span>
+          <img src="../symbolletterlogo.png" alt="Belac Media client logo" />
+        </div>
+        <div class="meta">
+          <div><strong>Live SEO Snapshot</strong></div>
+          <div>2026-05-06</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <p class="kicker">SEO Performance Report</p>
+        <h1>Belac Media SEO Results</h1>
+        <p class="subtitle">
+          Live scan example for <strong>www.belacmedia.com.au</strong>. This summary is designed for
+          client-facing reporting and sales conversion.
+        </p>
+
+        <section class="grid">
+          <div class="card">
+            <p class="label">Starting Score</p>
+            <p class="value value-before">66/100</p>
+          </div>
+          <div class="card">
+            <p class="label">Current Score</p>
+            <p class="value value-after">85/100</p>
+          </div>
+          <div class="card">
+            <p class="label">Net Improvement</p>
+            <p class="value value-after">+19</p>
+          </div>
+          <div class="card">
+            <p class="label">Checks Passing</p>
+            <p class="value">7/8</p>
+          </div>
+        </section>
+
+        <section class="two-col">
+          <div class="section">
+            <h2>Score Trend</h2>
+            <p>At-a-glance growth from baseline to current state.</p>
+            <div class="chart">
+              <svg viewBox="0 0 520 210" width="100%" height="210" role="img" aria-label="Score trend chart">
+                <line x1="30" y1="170" x2="500" y2="170" stroke="#d1dae8" />
+                <line x1="30" y1="20" x2="30" y2="170" stroke="#d1dae8" />
+                <text x="30" y="188" font-size="12" fill="#667085">Start</text>
+                <text x="440" y="188" font-size="12" fill="#667085">Current</text>
+                <circle cx="80" cy="125" r="6" fill="#b7791f" />
+                <text x="60" y="112" font-size="12" fill="#b7791f">66</text>
+                <circle cx="450" cy="70" r="6" fill="#19d2a2" />
+                <text x="432" y="56" font-size="12" fill="#0f766e">85</text>
+                <path d="M80 125 C170 100, 300 85, 450 70" fill="none" stroke="#19d2a2" stroke-width="3" />
+              </svg>
+            </div>
+          </div>
+          <div class="section">
+            <h2>Issue Reduction</h2>
+            <p>How blockers reduced after remediation work.</p>
+            <div class="chart">
+              <svg viewBox="0 0 520 210" width="100%" height="210" role="img" aria-label="Issue reduction chart">
+                <text x="30" y="24" font-size="12" fill="#667085">High</text>
+                <rect x="80" y="12" width="120" height="18" fill="#dc2626" />
+                <rect x="210" y="12" width="20" height="18" fill="#19d2a2" />
+                <text x="83" y="26" font-size="11" fill="#fff">Before: 5</text>
+                <text x="213" y="26" font-size="11" fill="#fff">Now: 1</text>
+                <text x="30" y="74" font-size="12" fill="#667085">Medium</text>
+                <rect x="80" y="62" width="96" height="18" fill="#d97706" />
+                <rect x="186" y="62" width="40" height="18" fill="#19d2a2" />
+                <text x="83" y="76" font-size="11" fill="#fff">Before: 4</text>
+                <text x="189" y="76" font-size="11" fill="#fff">Now: 2</text>
+                <text x="30" y="124" font-size="12" fill="#667085">Low</text>
+                <rect x="80" y="112" width="72" height="18" fill="#0f766e" />
+                <rect x="162" y="112" width="54" height="18" fill="#19d2a2" />
+                <text x="83" y="126" font-size="11" fill="#fff">Before: 3</text>
+                <text x="165" y="126" font-size="11" fill="#fff">Now: 2</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>Priority Findings Summary</h2>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Priority</th>
+                <th>Issue</th>
+                <th>Why it matters (plain English)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="pill high">High</span></td>
+                <td>Meta description is too long (205 characters)</td>
+                <td>Google may cut the snippet, making your search result less clear and less clickable.</td>
+                <td>Open</td>
+              </tr>
+              <tr>
+                <td><span class="pill med">Medium</span></td>
+                <td>Canonical points to .com while scanned URL is .com.au</td>
+                <td>Can send mixed signals about your preferred domain if not intentional.</td>
+                <td>Needs confirmation</td>
+              </tr>
+              <tr>
+                <td><span class="pill low">Low</span></td>
+                <td>Add ongoing trend tracking charts</td>
+                <td>Visual trend reporting makes wins easier to communicate to stakeholders.</td>
+                <td>Planned</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="section">
+          <h2>What This Means For Your Business</h2>
+          <p>
+            The site has a strong technical baseline. Addressing the remaining high-priority snippet issue
+            should improve click-through quality and push performance toward enterprise-grade reporting standards.
+          </p>
+        </section>
+
+        <section class="cta">
+          <strong>Want the full deep-dive audit?</strong><br />
+          This summary report highlights the biggest wins and remaining issues. For a complete
+          page-by-page strategy, technical diagnostics, and keyword roadmap, contact Belac Media for
+          the full SEO intelligence report.
+          <div style="margin-top:8px;">hello@belacmedia.com · +61 XX XXX XXX</div>
+        </section>
+
+        <p class="foot">Prepared by Belac Media · Live scan at 2026-05-06T09:29:15Z</p>
+      </div>
+    </article>
+  </body>
+</html>

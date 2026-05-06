@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Belac Media SEO Certificate</title>
+    <style>
+      :root {
+        --brand-primary: #19d2a2;
+        --brand-dark: #0a0a0a;
+        --ink: #101729;
+        --muted: #5f6b85;
+        --line: #d8deea;
+        --bg: #eef2f7;
+        --warn: #c18922;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Plus Jakarta Sans", "Inter", Arial, sans-serif;
+        padding: 26px;
+      }
+      .certificate {
+        width: 100%;
+        max-width: 980px;
+        margin: 0 auto;
+        border: 1px solid #cfd6e5;
+        border-radius: 14px;
+        background: #fff;
+        overflow: hidden;
+      }
+      .brand-bar {
+        background: var(--brand-dark);
+        color: #fff;
+        padding: 18px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .logo-wrap {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .logo-wrap img {
+        display: block;
+        height: 40px;
+        width: auto;
+        object-fit: contain;
+      }
+      .logo-divider {
+        width: 1px;
+        height: 34px;
+        background: rgba(255, 255, 255, 0.24);
+      }
+      .client-logo-label {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.64);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .issued-badge {
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .content {
+        padding: 24px;
+      }
+      .kicker {
+        margin: 0;
+        color: var(--brand-primary);
+        font-size: 12px;
+        letter-spacing: 0.1em;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 8px 0 0;
+        font-size: 38px;
+        line-height: 1.1;
+        font-family: "Noto Serif", Georgia, serif;
+      }
+      .subtitle {
+        margin: 10px 0 0;
+        max-width: 74ch;
+        color: var(--muted);
+      }
+      .card {
+        margin-top: 16px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 14px;
+      }
+      .card h2, .card h3 {
+        margin: 0 0 8px;
+        font-size: 15px;
+      }
+      .card p { margin: 0; }
+      .card p + p { margin-top: 4px; }
+      .score-grid {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+      .score {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        background: #fff;
+      }
+      .score .label {
+        margin: 0;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .score .value {
+        margin: 6px 0 0;
+        font-size: 34px;
+        font-weight: 800;
+      }
+      .before { color: var(--warn); }
+      .after, .delta { color: var(--brand-primary); }
+      .card ul { margin: 0 0 0 18px; color: #26314a; }
+      .card li { margin: 4px 0; }
+      .footer {
+        margin-top: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+      }
+      .sign {
+        color: var(--muted);
+        font-size: 13px;
+      }
+      .stamp {
+        border: 1px solid rgba(25, 210, 162, 0.55);
+        color: #138c6f;
+        background: rgba(25, 210, 162, 0.08);
+        padding: 8px 11px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      @media (max-width: 860px) {
+        .brand-bar { flex-direction: column; align-items: flex-start; }
+        .score-grid { grid-template-columns: 1fr; }
+        .footer { flex-direction: column; align-items: flex-start; }
+      }
+      @media print {
+        body { background: #fff; padding: 0; }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="certificate">
+      <header class="brand-bar">
+        <div class="logo-wrap">
+          <img src="../symbolhorizontallogo.png" alt="Belac Media" />
+          <span class="logo-divider" aria-hidden="true"></span>
+          <div>
+            <p class="client-logo-label">Client Brand</p>
+            <img src="{{CLIENT_LOGO_URL}}" alt="{{CLIENT_NAME}} logo" />
+          </div>
+        </div>
+        <span class="issued-badge">Issued {{ISSUED_DATE}}</span>
+      </header>
+
+      <div class="content">
+        <p class="kicker">SEO Performance Certification</p>
+        <h1>SEO Improvement Certificate</h1>
+        <p class="subtitle">
+          This certifies that the website below completed a measurable SEO improvement cycle under Belac
+          Media review standards.
+        </p>
+
+        <div class="card">
+          <h2>Client Details</h2>
+          <p><strong>Business:</strong> {{CLIENT_NAME}}</p>
+          <p><strong>Website:</strong> {{WEBSITE_URL}}</p>
+          <p><strong>Audit window:</strong> {{AUDIT_START}} to {{AUDIT_END}}</p>
+        </div>
+
+        <div class="score-grid">
+          <article class="score">
+            <p class="label">Starting score</p>
+            <p class="value before">{{SCORE_BEFORE}}/100</p>
+          </article>
+          <article class="score">
+            <p class="label">Final score</p>
+            <p class="value after">{{SCORE_AFTER}}/100</p>
+          </article>
+          <article class="score">
+            <p class="label">Net improvement</p>
+            <p class="value delta">{{SCORE_DELTA}}</p>
+          </article>
+        </div>
+
+        <section class="card">
+          <h3>Work Completed</h3>
+          <ul>
+            <li>Search metadata quality and page-level title/description improvements</li>
+            <li>Indexation and crawl-rule alignment for public vs utility pages</li>
+            <li>Sitemap, canonical, and route consistency corrections</li>
+            <li>Structured data and social preview enhancement</li>
+            <li>Technical verification through lint, test, and build QA checks</li>
+          </ul>
+        </section>
+
+        <section class="card">
+          <h3>Plain-English Result</h3>
+          <p>
+            The website now gives clearer signals to search engines, making it easier to discover,
+            understand, and rank the right pages.
+          </p>
+        </section>
+
+        <footer class="footer">
+          <p class="sign">
+            Signed: {{SIGNATORY_NAME}} · {{SIGNATORY_TITLE}} · Belac Media
+          </p>
+          <span class="stamp">Verified by Belac Media</span>
+        </footer>
+      </div>
+    </section>
+  </body>
+</html>

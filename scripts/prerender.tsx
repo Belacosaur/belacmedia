@@ -37,7 +37,7 @@ function loadDotEnv() {
 
 loadDotEnv()
 
-const PRERENDER_ROUTES = ['/', '/privacy', '/terms', '/brand'] as const
+const PRERENDER_ROUTES = ['/', '/privacy', '/terms', '/brand', '/seo-checker'] as const
 
 function PrerenderShell({ location }: { location: string }) {
   return (
