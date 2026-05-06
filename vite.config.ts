@@ -1,3 +1,5 @@
+import fs from 'node:fs'
+import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import { defineConfig, loadEnv, type Plugin } from 'vite'
 
@@ -29,6 +31,35 @@ function validateMeasurementId(id: string): boolean {
   return /^G-[A-Z0-9]+$/i.test(id)
 }
 
+/** Emit crawlers/sitemap.xml + robots.txt into dist using VITE_SITE_ORIGIN (overrides public/ copy). */
+function seoFilesPlugin(mode: string): Plugin {
+  return {
+    name: 'seo-files',
+    closeBundle() {
+      const env = loadEnv(mode, process.cwd(), '')
+      const origin = (env.VITE_SITE_ORIGIN || 'https://belacmedia.com').replace(/\/$/, '')
+      const distDir = path.resolve(process.cwd(), 'dist')
+      const lastmod = new Date().toISOString().slice(0, 10)
+      const paths = ['/', '/privacy', '/terms', '/brand']
+      let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+      xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+      for (const p of paths) {
+        const loc = p === '/' ? `${origin}/` : `${origin}${p}`
+        xml += '  <url>\n'
+        xml += `    <loc>${loc}</loc>\n`
+        xml += `    <lastmod>${lastmod}</lastmod>\n`
+        xml += '    <changefreq>weekly</changefreq>\n'
+        xml += '  </url>\n'
+      }
+      xml += '</urlset>\n'
+      const robots = `User-agent: *\nAllow: /\nDisallow: /app/\n\nSitemap: ${origin}/sitemap.xml\n`
+      fs.mkdirSync(distDir, { recursive: true })
+      fs.writeFileSync(path.join(distDir, 'robots.txt'), robots)
+      fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xml)
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -42,7 +73,11 @@ export default defineConfig(({ mode }) => {
   const gaDebug = env.VITE_GA_DEBUG === 'true'
 
   return {
-    plugins: [react(), ...(gaId ? [ga4DirectSnippetPlugin(gaId, gaDebug)] : [])],
+    plugins: [
+      react(),
+      seoFilesPlugin(mode),
+      ...(gaId ? [ga4DirectSnippetPlugin(gaId, gaDebug)] : []),
+    ],
     server: {
       proxy: {
         '/api': { target: 'http://127.0.0.1:4000', changeOrigin: true },

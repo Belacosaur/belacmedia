@@ -22,13 +22,18 @@ export default function HeroProductVisual() {
   return (
     <div className="bp-hero-visual" aria-hidden>
       <motion.div className="bp-hero-visual__frame" {...subtle}>
-        <img
-          src="/belacmediabelac.png"
-          alt=""
-          className="bp-hero-visual__photo"
-          loading="eager"
-          decoding="async"
-        />
+        <picture>
+          <source type="image/webp" srcSet="/belacmediabelac.webp" />
+          <img
+            src="/belacmediabelac.png"
+            alt=""
+            className="bp-hero-visual__photo"
+            width={1254}
+            height={1254}
+            loading="eager"
+            decoding="async"
+          />
+        </picture>
       </motion.div>
       {/* Positioning uses transform on this wrapper — motion must not set transform here or centering breaks */}
       <div className="bp-hero-visual__float">

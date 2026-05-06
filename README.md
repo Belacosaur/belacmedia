@@ -16,6 +16,7 @@
 
 Create `.env` from `.env.example`:
 
+- `VITE_SITE_ORIGIN`: **Production site origin** with no trailing slash (e.g. `https://belacmedia.com`). Used for canonical URLs, Open Graph/Twitter tags, JSON-LD, and emitted `robots.txt` / `sitemap.xml` during `vite build`. Match this to the deployed hostname per environment.
 - `VITE_API_URL`: Backend API base URL (Railway backend URL in production).
 - `VITE_GOOGLE_CLIENT_ID`: Optional Google sign-in client id.
 - `VITE_GA_MEASUREMENT_ID`: **Recommended.** Google Analytics 4 **Measurement ID** (`G-XXXXXXXXXX`). At **build** and **dev**, Vite injects Google’s official **`gtag.js` snippet into `index.html`** (`vite.config.ts`). `send_page_view` is off; SPA `page_view` is sent from `RouteAnalytics` via `trackPage()`. Custom events use `trackEvent()` in `src/lib/analytics.ts`.

@@ -1,0 +1,1070 @@
+<!-- Belac Media - Home (Grounded) -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BELAC MEDIA | Digital Help for Local Businesses</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Serif:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#e2e2e2",
+                    "on-tertiary-container": "#3b3b3b",
+                    "on-secondary-container": "#bab8b7",
+                    "secondary-fixed": "#e5e2e1",
+                    "inverse-on-surface": "#2f3131",
+                    "secondary-container": "#4a4949",
+                    "on-primary-container": "#4e3700",
+                    "error-container": "#93000a",
+                    "on-error": "#690005",
+                    "surface": "#121414",
+                    "on-error-container": "#ffdad6",
+                    "on-surface": "#e2e2e2",
+                    "secondary": "#c9c6c5",
+                    "tertiary": "#c8c6c5",
+                    "inverse-primary": "#775a19",
+                    "inverse-surface": "#e2e2e2",
+                    "error": "#ffb4ab",
+                    "on-tertiary-fixed": "#1b1b1c",
+                    "on-primary-fixed": "#261900",
+                    "surface-variant": "#333535",
+                    "on-primary-fixed-variant": "#5d4201",
+                    "on-secondary": "#313030",
+                    "surface-dim": "#121414",
+                    "surface-bright": "#37393a",
+                    "on-tertiary": "#303030",
+                    "on-secondary-fixed": "#1c1b1b",
+                    "tertiary-fixed": "#e5e2e1",
+                    "surface-container-high": "#282a2b",
+                    "surface-container-highest": "#333535",
+                    "background": "#121414",
+                    "outline-variant": "#4e4639",
+                    "primary-fixed": "#ffdea5",
+                    "on-tertiary-fixed-variant": "#474746",
+                    "primary": "#e9c176",
+                    "primary-container": "#c5a059",
+                    "primary-fixed-dim": "#e9c176",
+                    "surface-container-lowest": "#0c0f0f",
+                    "on-surface-variant": "#d1c5b4",
+                    "surface-container": "#1e2020",
+                    "on-secondary-fixed-variant": "#474646",
+                    "surface-container-low": "#1a1c1c",
+                    "tertiary-container": "#a7a5a5",
+                    "secondary-fixed-dim": "#c9c6c5",
+                    "tertiary-fixed-dim": "#c8c6c5",
+                    "outline": "#9a8f80",
+                    "on-primary": "#412d00",
+                    "surface-tint": "#e9c176"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-page": "80px",
+                    "section-gap": "160px",
+                    "unit": "8px",
+                    "gutter": "32px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-xl": ["Noto Serif"],
+                    "headline-lg": ["Noto Serif"],
+                    "headline-md": ["Noto Serif"]
+            },
+            "fontSize": {
+                    "body-lg": ["20px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-xl": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "headline-md": ["28px", {"lineHeight": "1.3", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-mantle {
+            background: rgba(31, 31, 31, 0.5);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(233, 193, 118, 0.08);
+        }
+        .gilded-border {
+            border: 1px solid rgba(233, 193, 118, 0.15);
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #e9c176 0%, #b88d3e 100%);
+        }
+        .spotlight {
+            background: radial-gradient(circle at top right, rgba(233, 193, 118, 0.03) 0%, transparent 60%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page py-6 max-w-container-max mx-auto bg-background/90 backdrop-blur-md border-b border-white/5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 gold-gradient flex items-center justify-center font-bold text-on-primary text-xs">BM</div>
+<span class="font-headline-md text-xl font-bold text-on-surface tracking-tight">BELAC MEDIA</span>
+</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-primary font-semibold font-label-sm text-xs uppercase tracking-wider" href="#">Strategy</a>
+<a class="text-on-surface-variant font-medium font-label-sm text-xs uppercase tracking-wider hover:text-primary transition-colors" href="#">Work</a>
+<a class="text-on-surface-variant font-medium font-label-sm text-xs uppercase tracking-wider hover:text-primary transition-colors" href="#">Process</a>
+<a class="text-on-surface-variant font-medium font-label-sm text-xs uppercase tracking-wider hover:text-primary transition-colors" href="#">Contact</a>
+</nav>
+<button class="gold-gradient text-on-primary px-6 py-2.5 rounded-sm font-label-sm text-xs uppercase tracking-widest hover:brightness-105 transition-all">
+        Get in Touch
+    </button>
+</header>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex flex-col justify-center items-start px-margin-page pt-32 overflow-hidden">
+<div class="absolute inset-0 spotlight pointer-events-none"></div>
+<div class="relative z-10 max-w-3xl">
+<span class="font-label-sm text-xs text-primary uppercase tracking-[0.2em] mb-4 block">Based in Melbourne, working globally</span>
+<h1 class="font-display-xl text-display-xl text-on-surface mb-6 leading-tight">
+                Websites and systems that <span class="text-primary italic">actually work.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10 max-w-xl">
+                We help Australian businesses grow with practical digital strategy, clean web design, and content that resonates with real people.
+            </p>
+<div class="flex flex-col sm:flex-row gap-4">
+<button class="gold-gradient text-on-primary px-8 py-4 rounded-sm font-label-sm text-xs uppercase tracking-widest hover:brightness-110 transition-all">
+                    Start a Project
+                </button>
+<button class="border border-white/10 text-on-surface px-8 py-4 rounded-sm font-label-sm text-xs uppercase tracking-widest hover:bg-white/5 transition-all">
+                    See Our Results
+                </button>
+</div>
+</div>
+</section>
+<!-- Results/Metric Bar -->
+<section class="py-12 border-y border-white/5 bg-surface-container-lowest">
+<div class="px-margin-page max-w-container-max mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+<div class="text-center">
+<div class="text-primary font-display-xl text-4xl mb-1">$12M+</div>
+<div class="text-on-surface-variant font-label-sm text-[10px] uppercase tracking-widest">Revenue Generated</div>
+</div>
+<div class="text-center">
+<div class="text-primary font-display-xl text-4xl mb-1">150%</div>
+<div class="text-on-surface-variant font-label-sm text-[10px] uppercase tracking-widest">Avg. Growth Rate</div>
+</div>
+<div class="text-center">
+<div class="text-primary font-display-xl text-4xl mb-1">45+</div>
+<div class="text-on-surface-variant font-label-sm text-[10px] uppercase tracking-widest">Active Partners</div>
+</div>
+<div class="text-center">
+<div class="text-primary font-display-xl text-4xl mb-1">100%</div>
+<div class="text-on-surface-variant font-label-sm text-[10px] uppercase tracking-widest">Project Delivery</div>
+</div>
+</div>
+</section>
+<!-- Services Section -->
+<section class="py-section-gap px-margin-page max-w-container-max mx-auto">
+<div class="mb-16">
+<span class="font-label-sm text-xs text-primary uppercase tracking-widest block mb-2">What we do</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Digital help where you need it most.</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Service 1 -->
+<div class="glass-mantle p-10 gilded-border hover:border-primary/30 transition-colors">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<h3 class="font-headline-md text-xl text-on-surface mb-4">Practical Strategy</h3>
+<p class="font-body-md text-on-surface-variant">We don't do fluff. We look at your business, find what's missing, and build a roadmap that makes sense for your bottom line.</p>
+</div>
+<!-- Service 2 -->
+<div class="glass-mantle p-10 gilded-border hover:border-primary/30 transition-colors">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary">devices</span>
+</div>
+<h3 class="font-headline-md text-xl text-on-surface mb-4">Web &amp; Development</h3>
+<p class="font-body-md text-on-surface-variant">Fast, secure websites that work on every device. Built for humans to use and for you to manage easily.</p>
+</div>
+<!-- Service 3 -->
+<div class="glass-mantle p-10 gilded-border hover:border-primary/30 transition-colors">
+<div class="w-12 h-12 bg-surface-container-highest flex items-center justify-center mb-8">
+<span class="material-symbols-outlined text-primary">video_library</span>
+</div>
+<h3 class="font-headline-md text-xl text-on-surface mb-4">Content Production</h3>
+<p class="font-body-md text-on-surface-variant">High-quality photos and videos that show off what you do. No stock photos, just your real team and your real work.</p>
+</div>
+</div>
+</section>
+<!-- Process Section (Horizontal & Simple) -->
+<section class="py-section-gap bg-surface-container-low">
+<div class="px-margin-page max-w-container-max mx-auto">
+<div class="max-w-2xl mb-20">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">A simple way to work.</h2>
+<p class="font-body-lg text-on-surface-variant">We move fast, communicate clearly, and focus on delivering results without the agency jargon.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+<div class="flex flex-col gap-4">
+<div class="text-primary font-display-xl text-2xl border-b border-primary/20 pb-4">01. Chat &amp; Plan</div>
+<p class="font-body-md text-on-surface-variant">We sit down to understand your goals. No complex sales pitch, just a clear plan of action.</p>
+</div>
+<div class="flex flex-col gap-4">
+<div class="text-primary font-display-xl text-2xl border-b border-primary/20 pb-4">02. Design &amp; Build</div>
+<p class="font-body-md text-on-surface-variant">Our team gets to work. You'll get regular updates and see progress in real-time as we build.</p>
+</div>
+<div class="flex flex-col gap-4">
+<div class="text-primary font-display-xl text-2xl border-b border-primary/20 pb-4">03. Launch &amp; Support</div>
+<p class="font-body-md text-on-surface-variant">Once we're live, we don't just disappear. We're here to help you scale and keep things running smoothly.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Proof Section -->
+<section class="py-section-gap px-margin-page max-w-container-max mx-auto">
+<div class="flex flex-col lg:flex-row items-center gap-16">
+<div class="w-full lg:w-1/2">
+<span class="font-label-sm text-xs text-primary uppercase tracking-widest block mb-4">Case Study</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">Real impact for local industry leaders.</h2>
+<p class="font-body-lg text-on-surface-variant mb-8">
+                    "Belac Media didn't just build us a new site; they understood our business. Our online enquiries tripled within the first month of launching."
+                </p>
+<div class="flex items-center gap-4">
+<div class="w-14 h-14 bg-surface-container-highest rounded-sm overflow-hidden">
+<img alt="Client Profile" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDCWZjIyGxu450oQPKN-nBV5bAIlOgT_HW-OE5Oy39UAE6xxpO-PIAy2-I7q4X8t1EXqk8ZhmhwTd3JvQ4Iugjef4RiDgr9HKzXrGA2yfxkWeRwHyV6CmjDIBj3ptjaFPmhAvFCVDivIGtvC0VXMDeuOPF_IpVIA3G4UkRfuK1_rr4RC6odwf0gUVb0sH8gYRdWhJJ6pCBoIG7bERIk2HKbHzTRplgaIZfVT17aOKITBiUq2rIbCCbFesQEBmhqLTibNbC4l93sGw"/>
+</div>
+<div>
+<p class="font-bold text-on-surface">Mark Sullivan</p>
+<p class="text-xs text-primary uppercase tracking-wider">Director, Sullivan Engineering</p>
+</div>
+</div>
+</div>
+<div class="w-full lg:w-1/2">
+<div class="relative rounded-sm overflow-hidden aspect-video shadow-2xl">
+<img alt="Project Showcase" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLaIg1GB-D_Xl1GpfwsUm2ljnuIx4RHHeemVmtS3VfGNYZczYwIgU7GRardjLO4YnKMnSfr_cGggOz7AeafCQ5ksnQpXEv11Gl2CMhC7VusFwtSZzhziaXPazpbaB3KZzUSBFpncE46X_r3HA4P94MZX9vDcdBZY30vc676UTwD2UvaNOmncMB4aLNTHfUdfwmeknPl3XQR56Jg9-OQMZmDIrDCKivFxd1WjEbYI_BjJJigFy4BZrVJAYWEDQJPlprVKr0Gw58Uw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+<div>
+<p class="text-white font-bold text-lg">Project: Industrial Digital Hub</p>
+<p class="text-white/80 text-sm">+215% Mobile Engagement</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final CTA -->
+<section class="py-32 text-center bg-surface-container border-t border-white/5">
+<div class="px-margin-page">
+<h2 class="font-headline-lg text-headline-lg mb-8 max-w-2xl mx-auto">Ready to build something that works?</h2>
+<p class="font-body-lg text-on-surface-variant mb-12 max-w-xl mx-auto">Book a 15-minute intro call. No pressure, just a talk about your project.</p>
+<button class="gold-gradient text-on-primary px-12 py-5 rounded-sm font-label-sm text-sm uppercase tracking-widest hover:brightness-110 transition-all shadow-xl shadow-primary/5">
+                Book a Free Consultation
+            </button>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-20 px-margin-page bg-background border-t border-white/5">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
+<div class="max-w-xs">
+<div class="font-headline-md text-2xl text-on-surface font-bold mb-4">BELAC MEDIA</div>
+<p class="font-body-md text-on-surface-variant mb-6">
+                Professional digital services for businesses that value quality and results. Based in Melbourne, Australia.
+            </p>
+<p class="text-xs text-on-surface-variant">© 2024 BELAC MEDIA. All rights reserved.</p>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-12">
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-xs text-on-surface uppercase tracking-widest mb-2">Expertise</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Web Design</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Digital Strategy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Video Production</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-xs text-on-surface uppercase tracking-widest mb-2">Company</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Our Work</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Contact</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-xs text-on-surface uppercase tracking-widest mb-2">Connect</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">LinkedIn</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors text-sm" href="#">Instagram</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
+
+<!-- Our Work - Belac Media (Grounded) -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Serif:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#e2e2e2",
+                      "on-tertiary-container": "#3b3b3b",
+                      "on-secondary-container": "#bab8b7",
+                      "secondary-fixed": "#e5e2e1",
+                      "inverse-on-surface": "#2f3131",
+                      "secondary-container": "#4a4949",
+                      "on-primary-container": "#4e3700",
+                      "error-container": "#93000a",
+                      "on-error": "#690005",
+                      "surface": "#121414",
+                      "on-error-container": "#ffdad6",
+                      "on-surface": "#e2e2e2",
+                      "secondary": "#c9c6c5",
+                      "tertiary": "#c8c6c5",
+                      "inverse-primary": "#775a19",
+                      "inverse-surface": "#e2e2e2",
+                      "error": "#ffb4ab",
+                      "on-tertiary-fixed": "#1b1b1c",
+                      "on-primary-fixed": "#261900",
+                      "surface-variant": "#333535",
+                      "on-primary-fixed-variant": "#5d4201",
+                      "on-secondary": "#313030",
+                      "surface-dim": "#121414",
+                      "surface-bright": "#37393a",
+                      "on-tertiary": "#303030",
+                      "on-secondary-fixed": "#1c1b1b",
+                      "tertiary-fixed": "#e5e2e1",
+                      "surface-container-high": "#282a2b",
+                      "surface-container-highest": "#333535",
+                      "background": "#121414",
+                      "outline-variant": "#4e4639",
+                      "primary-fixed": "#ffdea5",
+                      "on-tertiary-fixed-variant": "#474746",
+                      "primary": "#e9c176",
+                      "primary-container": "#c5a059",
+                      "primary-fixed-dim": "#e9c176",
+                      "surface-container-lowest": "#0c0f0f",
+                      "on-surface-variant": "#d1c5b4",
+                      "surface-container": "#1e2020",
+                      "on-secondary-fixed-variant": "#474646",
+                      "surface-container-low": "#1a1c1c",
+                      "tertiary-container": "#a7a5a5",
+                      "secondary-fixed-dim": "#c9c6c5",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "outline": "#9a8f80",
+                      "on-primary": "#412d00",
+                      "surface-tint": "#e9c176"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-page": "80px",
+                      "section-gap": "160px",
+                      "unit": "8px",
+                      "gutter": "32px",
+                      "container-max": "1280px"
+              },
+              "fontFamily": {
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-xl": ["Noto Serif"],
+                      "headline-lg": ["Noto Serif"],
+                      "headline-md": ["Noto Serif"]
+              },
+              "fontSize": {
+                      "body-lg": ["20px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-xl": ["84px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .gilded-border {
+            border: 1px solid transparent;
+            background: linear-gradient(to bottom right, #e9c176, #775a19) border-box;
+            -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: destination-out;
+            mask-composite: exclude;
+        }
+        .glass-mantle {
+            background-color: rgba(31, 31, 31, 0.4);
+            backdrop-filter: blur(12px);
+        }
+        .cafe-glow {
+            background: radial-gradient(circle at 0% 0%, rgba(233, 193, 118, 0.05) 0%, transparent 50%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary selection:text-on-primary cafe-glow">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page py-6 max-w-container-max mx-auto bg-surface/90 backdrop-blur-md border-b border-white/5">
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter">BELAC MEDIA</div>
+<nav class="hidden md:flex items-center gap-gutter">
+<a class="text-on-surface-variant font-medium pb-1 font-label-sm text-label-sm uppercase tracking-widest hover:text-primary transition-colors duration-300" href="#">Strategy</a>
+<a class="text-on-surface-variant font-medium pb-1 font-label-sm text-label-sm uppercase tracking-widest hover:text-primary transition-colors duration-300" href="#">Content</a>
+<a class="text-on-surface-variant font-medium pb-1 font-label-sm text-label-sm uppercase tracking-widest hover:text-primary transition-colors duration-300" href="#">Dev</a>
+<a class="text-primary font-bold border-b border-primary pb-1 font-label-sm text-label-sm uppercase tracking-widest" href="#">Work</a>
+</nav>
+<button class="bg-primary text-on-primary px-6 py-2 font-label-sm text-label-sm uppercase tracking-widest rounded hover:bg-primary-container transition-all">Start a Project</button>
+</header>
+<main class="pt-[120px]">
+<!-- Hero Section -->
+<section class="px-margin-page py-24 max-w-container-max mx-auto">
+<div class="max-w-4xl">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-4 block">Case Studies</span>
+<h1 class="font-display-xl text-display-xl mb-8">Proof Over Hype.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">We don't sell promises. We solve specific business problems with high-quality digital infrastructure. Here is exactly what we did for our partners last quarter.</p>
+</div>
+</section>
+<!-- Featured Case Study: Honest Structure -->
+<section class="px-margin-page mb-section-gap max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-center bg-surface-container-low rounded-xl overflow-hidden border border-white/5">
+<div class="lg:col-span-6 h-[400px] lg:h-[600px]">
+<img class="w-full h-full object-cover grayscale-[0.3] hover:grayscale-0 transition-all duration-700" data-alt="A cinematic, low-angle shot of a high-tech architectural building at dusk, glowing with golden interior lights against a deep obsidian sky." src="https://lh3.googleusercontent.com/aida/ADBb0ug-QzkM6bjd2ZAd2MMCqvteb-wlURazzUWEAG9AehsooBnsIgB1bV3h8XJAbhIi0vFKkVMOsavwhzm4yhQbUrJ61954SZfa2LoSIHfbVzNYS6UX14EIjl-AFuNSAhEjs0XgQ6DnukymvO6LD3aC5heHBHAHvMN6nWWhdEZTruDn5IPkCgKRgagK9nYpmcLomJSdrvPfQ5nu7gxha1PIbeZBAmXbAEJhN9PuCJRv9dU_3ACWMDaH6USwh-idY4eITyvJmHkQ8iRN"/>
+</div>
+<div class="lg:col-span-6 p-12 lg:pr-24">
+<span class="font-label-sm text-label-sm text-primary uppercase mb-2 block">Real Estate Development</span>
+<h2 class="font-headline-lg text-headline-lg mb-8">Aura Luxury Homes</h2>
+<div class="grid gap-8">
+<div>
+<h4 class="font-label-sm text-label-sm text-primary uppercase mb-2">The Problem</h4>
+<p class="font-body-md text-on-surface-variant">Aura had a world-class physical product but a digital presence that felt cheap. They were losing 40% of their qualified leads because their site was slow and didn't reflect their $5M+ price points.</p>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-primary uppercase mb-2">Our Fix</h4>
+<p class="font-body-md text-on-surface-variant">We stripped away the fluff and built a high-performance custom platform. We prioritized visual storytelling and reduced load times from 6 seconds to under 800ms.</p>
+</div>
+<div class="pt-8 border-t border-white/10">
+<h4 class="font-label-sm text-label-sm text-primary uppercase mb-2">The Result</h4>
+<div class="flex items-baseline gap-4">
+<span class="text-[84px] font-display-xl text-primary leading-none">+616%</span>
+<span class="font-body-md text-on-surface-variant">Inbound lead growth within 90 days.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Secondary Case Studies Grid -->
+<section class="px-margin-page pb-section-gap max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Project 2 -->
+<div class="bg-surface-container-low rounded-xl border border-white/5 overflow-hidden flex flex-col">
+<div class="aspect-video overflow-hidden">
+<img class="w-full h-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all duration-500" data-alt="A professional boardroom setting with high-end tech equipment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMytZ7jqwDinSf3ISEDyUp2p7w2qTtVT5R-B1qejBQ0_R8-U3yfPQRzorl4SdsHCRYKBQkjoK4MGBqWUNQ7yC-u50eV3E-cViOVMXAjiAFM9-5cEpX5H6UG0jeSag1KrPpFeUBmFz2gCZRV0iIxFWVpH5C24sR4A4Pastp18mS3pkqtIlD8u69dEDR9g5HoKO93jSdx93Hs_p94Iw6nIw5YioO8HtlcKy3kO2t1ayI2EwROZz_L-WmYsTCauOGt_LA6Lv_jsWQRg"/>
+</div>
+<div class="p-10 flex-grow">
+<span class="font-label-sm text-label-sm text-primary uppercase mb-2 block">Fintech</span>
+<h3 class="font-headline-md text-headline-md mb-6">Lumina Wealth</h3>
+<div class="space-y-4 mb-8">
+<p class="text-sm"><strong class="text-primary uppercase font-label-sm mr-2">Problem:</strong> Trust issues due to outdated UI in a high-stakes market.</p>
+<p class="text-sm"><strong class="text-primary uppercase font-label-sm mr-2">Fix:</strong> Clean-room interface design with institutional-grade security cues.</p>
+</div>
+<div class="pt-6 border-t border-white/5 flex items-center justify-between">
+<span class="text-headline-lg font-display-xl text-primary">+210%</span>
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Lead Volume</span>
+</div>
+</div>
+</div>
+<!-- Project 3 -->
+<div class="bg-surface-container-low rounded-xl border border-white/5 overflow-hidden flex flex-col">
+<div class="aspect-video overflow-hidden">
+<img class="w-full h-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all duration-500" data-alt="A wide-angle shot of a minimalist, high-end office lobby." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvOGDXV3TN-r6LslDLBpScTu0jBfV7rhS2Z-wYFXCFHn0tv5xz4u_EnJxr_sQWjArAdbM7wi4Z_D9bvsqy-VkIjw3zeHyC88DsaFYnwSD1RBFNsyQ-vO8Ls7vu6o0OBZaGRaTnCIghsopClJijAPbSUv_Io46MZwZ2_CPG5ZZYG2CQrU5bOAAJipdstdmBvWlk0-SokElz_YZ2eoNdA5es4ED4hDwA3UYnJWSbzge8lqyrs2J4bbcdg3WQP4ydtrFtKybaGqeszg"/>
+</div>
+<div class="p-10 flex-grow">
+<span class="font-label-sm text-label-sm text-primary uppercase mb-2 block">Architecture</span>
+<h3 class="font-headline-md text-headline-md mb-6">Studio Arkhos</h3>
+<div class="space-y-4 mb-8">
+<p class="text-sm"><strong class="text-primary uppercase font-label-sm mr-2">Problem:</strong> Invisible on search engines; zero organic discovery for their work.</p>
+<p class="text-sm"><strong class="text-primary uppercase font-label-sm mr-2">Fix:</strong> Technical SEO overhaul and a portfolio CMS optimized for speed.</p>
+</div>
+<div class="pt-6 border-t border-white/5 flex items-center justify-between">
+<span class="text-headline-lg font-display-xl text-primary">Top 1%</span>
+<span class="font-label-sm text-on-surface-variant uppercase tracking-widest">Global Ranking</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section: Grounded & Human -->
+<section class="px-margin-page py-32 border-t border-white/5 bg-surface-container-lowest text-center">
+<div class="max-w-2xl mx-auto">
+<h2 class="font-headline-lg text-headline-lg mb-6">Let's be realistic.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-10">We don't work with everyone. We only take on projects where we can move the needle by at least 50%. If you have a clear problem and need a direct fix, let's talk.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-primary text-on-primary px-10 py-5 font-label-sm text-label-sm uppercase tracking-widest rounded hover:bg-primary-container transition-all">Schedule a Call</button>
+<button class="border border-white/10 px-10 py-5 font-label-sm text-label-sm uppercase tracking-widest rounded hover:bg-white/5 transition-all">Download Results PDF</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-24 px-margin-page flex flex-col md:flex-row justify-between items-start bg-surface border-t border-white/5">
+<div class="mb-12 md:mb-0">
+<div class="font-headline-md text-headline-md text-primary mb-4">BELAC MEDIA</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">Direct solutions for elite brands. No hype, just performance.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-x-16 gap-y-8">
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Work</span>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Case Studies</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Our Process</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Office</span>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">About Us</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Careers</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest">Contact</span>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">LinkedIn</a>
+<a class="font-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Instagram</a>
+</div>
+</div>
+<div class="w-full mt-24 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+<p class="font-label-sm text-label-sm text-on-surface-variant">© 2024 BELAC MEDIA. PROOF OVER HYPE.</p>
+<div class="flex gap-6">
+<span class="material-symbols-outlined text-on-surface-variant/50 text-xl" data-icon="shield">shield</span>
+<span class="material-symbols-outlined text-on-surface-variant/50 text-xl" data-icon="lock">lock</span>
+</div>
+</div>
+</footer>
+</body></html>
+
+<!-- Our Capabilities - Belac Media (Grounded) -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Our Capabilities - BELAC MEDIA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Serif:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-background": "#e2e2e2",
+                "on-tertiary-container": "#3b3b3b",
+                "on-secondary-container": "#bab8b7",
+                "secondary-fixed": "#e5e2e1",
+                "inverse-on-surface": "#2f3131",
+                "secondary-container": "#4a4949",
+                "on-primary-container": "#4e3700",
+                "error-container": "#93000a",
+                "on-error": "#690005",
+                "surface": "#121414",
+                "on-error-container": "#ffdad6",
+                "on-surface": "#e2e2e2",
+                "secondary": "#c9c6c5",
+                "tertiary": "#c8c6c5",
+                "inverse-primary": "#775a19",
+                "inverse-surface": "#e2e2e2",
+                "error": "#ffb4ab",
+                "on-tertiary-fixed": "#1b1b1c",
+                "on-primary-fixed": "#261900",
+                "surface-variant": "#333535",
+                "on-primary-fixed-variant": "#5d4201",
+                "on-secondary": "#313030",
+                "surface-dim": "#121414",
+                "surface-bright": "#37393a",
+                "on-tertiary": "#303030",
+                "on-secondary-fixed": "#1c1b1b",
+                "tertiary-fixed": "#e5e2e1",
+                "surface-container-high": "#282a2b",
+                "surface-container-highest": "#333535",
+                "background": "#121414",
+                "outline-variant": "#4e4639",
+                "primary-fixed": "#ffdea5",
+                "on-tertiary-fixed-variant": "#474746",
+                "primary": "#e9c176",
+                "primary-container": "#c5a059",
+                "primary-fixed-dim": "#e9c176",
+                "surface-container-lowest": "#0c0f0f",
+                "on-surface-variant": "#d1c5b4",
+                "surface-container": "#1e2020",
+                "on-secondary-fixed-variant": "#474646",
+                "surface-container-low": "#1a1c1c",
+                "tertiary-container": "#a7a5a5",
+                "secondary-fixed-dim": "#c9c6c5",
+                "tertiary-fixed-dim": "#c8c6c5",
+                "outline": "#9a8f80",
+                "on-primary": "#412d00",
+                "surface-tint": "#e9c176"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "margin-page": "80px",
+                "section-gap": "160px",
+                "unit": "8px",
+                "gutter": "32px",
+                "container-max": "1280px"
+            },
+            "fontFamily": {
+                "body-lg": ["Inter"],
+                "label-sm": ["Inter"],
+                "body-md": ["Inter"],
+                "display-xl": ["Noto Serif"],
+                "headline-lg": ["Noto Serif"],
+                "headline-md": ["Noto Serif"]
+            },
+            "fontSize": {
+                "body-lg": ["20px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "display-xl": ["84px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .glass-mantle {
+            background-color: rgba(31, 31, 31, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(233, 193, 118, 0.1);
+        }
+        .primary-gradient {
+            background: linear-gradient(135deg, #e9c176 0%, #775a19 100%);
+        }
+        .aura-gold {
+            background: radial-gradient(circle at center, rgba(233, 193, 118, 0.1) 0%, transparent 70%);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden">
+<!-- TopAppBar -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page py-6 max-w-container-max mx-auto bg-surface/90 backdrop-blur-xl border-b border-white/5">
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter">BELAC MEDIA</div>
+<div class="hidden md:flex items-center gap-10">
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300 font-label-sm text-label-sm uppercase tracking-widest" href="#">Strategy</a>
+<a class="text-primary font-bold border-b border-primary pb-1 font-label-sm text-label-sm uppercase tracking-widest" href="#">Content</a>
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300 font-label-sm text-label-sm uppercase tracking-widest" href="#">Dev</a>
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300 font-label-sm text-label-sm uppercase tracking-widest" href="#">Work</a>
+</div>
+<button class="primary-gradient text-on-primary font-label-sm text-label-sm uppercase tracking-widest px-8 py-3 rounded shadow-lg active:scale-95 transition-transform">
+        Get a Quote
+    </button>
+</nav>
+<main class="mt-32">
+<!-- Hero Section -->
+<section class="px-margin-page py-24 max-w-container-max mx-auto relative overflow-hidden">
+<div class="relative z-10 max-w-3xl">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-[0.3em] mb-6 block">What We Do</span>
+<h1 class="font-display-xl text-display-xl text-on-surface mb-8">Websites that actually make you money.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">We build fast, professional digital platforms that convert visitors into customers. No jargon, no technical fluff—just results that help your business grow.</p>
+</div>
+</section>
+<!-- Services Section: Strategy -->
+<section class="px-margin-page py-24 max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-12 gap-gutter items-center border-t border-primary/10">
+<div class="md:col-span-6">
+<div class="mb-8">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="insights">insights</span>
+</div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">Brand Strategy &amp; Positioning</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-12 mt-12">
+<div>
+<h4 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-4">How this helps you</h4>
+<p class="text-on-surface-variant font-body-md leading-relaxed">We fix the "why should I buy from you?" problem. We help you look like the leader in your industry so customers trust you instantly.</p>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-4">What you actually get</h4>
+<ul class="space-y-3 font-body-md text-on-surface">
+<li class="flex items-start gap-3"><span class="mt-2 w-1.5 h-1.5 bg-primary rounded-full shrink-0"></span> Professional Logo &amp; Brand Identity</li>
+<li class="flex items-start gap-3"><span class="mt-2 w-1.5 h-1.5 bg-primary rounded-full shrink-0"></span> Clear Sales Messaging</li>
+<li class="flex items-start gap-3"><span class="mt-2 w-1.5 h-1.5 bg-primary rounded-full shrink-0"></span> Market &amp; Competitor Analysis</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="md:col-span-5 md:col-start-8">
+<div class="relative rounded-lg overflow-hidden aspect-[4/3] bg-surface-container-high border border-white/5">
+<img alt="Strategic Planning" class="w-full h-full object-cover grayscale-[0.2]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCObH5RC3KvLe3r_RAyIjwzq6TqXCbq0rfQDEu-H-VD_DxkN8OkaSYx2biYwIVzqu09CIZZ6_WbJz5vumtY7X8fa5gM-RTrs_2NrgAEncBxyoM3B9irdDGp0dEl7Au73svZYDAhbRSEf572epzRPWt9VpXSOvO_In-6GmAvHjlMNhTgjyOiWnTw2vgxzJsPwaJzlJtH-EZivQpHA-evnMQ2ydSQpjDerWPShBRgDy_PVJ3rHd2i83E6jTwrWRa3kTLpUj5PA03iTw"/>
+</div>
+</div>
+</section>
+<!-- Services Section: Content Production -->
+<section class="bg-surface-container-low py-24">
+<div class="px-margin-page max-w-container-max mx-auto">
+<div class="mb-20">
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-4 block">Content</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Content that Stops the Scroll</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<div class="glass-mantle p-12 rounded-xl">
+<span class="material-symbols-outlined text-primary text-3xl mb-6" data-icon="ads_click">ads_click</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6">How this helps you</h3>
+<p class="text-on-surface-variant text-body-lg leading-relaxed">Most social content is ignored. We create high-quality videos and photos that grab attention, build authority, and drive actual enquiries to your inbox.</p>
+</div>
+<div class="p-12 border border-primary/10 rounded-xl">
+<h3 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-8">What you actually get</h3>
+<div class="space-y-8">
+<div>
+<span class="text-on-surface font-bold block mb-2">Cinematic Video &amp; Photography</span>
+<p class="text-on-surface-variant text-sm">Professional b-roll and headshots that make your business look world-class.</p>
+</div>
+<div>
+<span class="text-on-surface font-bold block mb-2">Social Media Management</span>
+<p class="text-on-surface-variant text-sm">We handle the posting and scheduling so you can stay focused on running the business.</p>
+</div>
+<div>
+<span class="text-on-surface font-bold block mb-2">Motion Graphics &amp; Ads</span>
+<p class="text-on-surface-variant text-sm">Eye-catching animations designed specifically to convert viewers into leads.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Section: Development -->
+<section class="px-margin-page py-24 max-w-container-max mx-auto">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-center">
+<div class="md:col-span-5 order-2 md:order-1">
+<div class="grid grid-cols-2 gap-4">
+<div class="aspect-square bg-surface-container-highest rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-5xl" data-icon="speed">speed</span>
+</div>
+<div class="aspect-square bg-surface-container-high rounded-lg flex items-center justify-center translate-y-8">
+<span class="material-symbols-outlined text-primary text-5xl" data-icon="devices">devices</span>
+</div>
+</div>
+</div>
+<div class="md:col-span-6 md:col-start-7 order-1 md:order-2 mb-12 md:mb-0">
+<span class="material-symbols-outlined text-primary text-4xl mb-6" data-icon="code">code</span>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">High-Performance Web Dev</h2>
+<div class="space-y-10 mt-12">
+<div>
+<h4 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-4">How this helps you</h4>
+<p class="font-body-md text-on-surface-variant">We build fast, secure, and easy-to-use websites. Your site will load instantly on phones, look great on desktops, and actually work when customers try to contact you.</p>
+</div>
+<div>
+<h4 class="font-label-sm text-label-sm text-primary uppercase tracking-widest mb-4">What you actually get</h4>
+<ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-on-surface font-medium">
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span> Custom Build (No Templates)</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span> Mobile Optimization</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span> Lightning-Fast Speed</li>
+<li class="flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm" data-icon="check_circle">check_circle</span> Ongoing Support</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="px-margin-page py-24">
+<div class="max-w-container-max mx-auto bg-surface-container-high rounded-2xl p-12 md:p-20 text-center relative overflow-hidden border border-white/5">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-1 bg-primary/30"></div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">Ready to grow?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto mb-10">We deliver professional results without the wait. Contact us today and we'll have a clear plan ready for you within 48 hours.</p>
+<div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+<button class="w-full sm:w-auto primary-gradient text-on-primary font-label-sm text-label-sm uppercase tracking-widest px-10 py-5 rounded shadow-xl hover:translate-y-[-2px] transition-all">
+                Talk to the Team
+            </button>
+<button class="w-full sm:w-auto px-10 py-5 border border-primary/20 rounded font-label-sm text-label-sm uppercase tracking-widest text-primary hover:bg-primary/5 transition-colors">
+                Our Past Results
+            </button>
+</div>
+<div class="mt-12 pt-12 border-t border-white/5 flex flex-wrap justify-center items-center gap-8 text-on-surface-variant text-sm">
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary" data-icon="verified">verified</span> Guaranteed Quality</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary" data-icon="shuttle_toggle">shuttle_toggle</span> Fast Turnaround</div>
+<div class="flex items-center gap-2"><span class="material-symbols-outlined text-primary" data-icon="chat">chat</span> Easy Communication</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full py-24 px-margin-page border-t border-white/5 bg-surface-container-low">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-start">
+<div class="mb-12 md:mb-0">
+<div class="font-headline-md text-headline-md text-primary mb-4">BELAC MEDIA</div>
+<p class="text-on-surface-variant max-w-xs font-body-md">Building digital outcomes for businesses that want to move fast and grow reliably.</p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-12 sm:gap-24">
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-widest mb-2">Services</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Strategy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Content</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Web Dev</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-label-sm text-on-surface uppercase tracking-widest mb-2">Company</span>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Results</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+</div>
+<div class="col-span-2 md:col-span-1">
+<p class="font-label-sm text-label-sm text-on-surface-variant/60">© 2024 BELAC MEDIA.<br/>PROUDLY SERVING AUSTRALIAN BUSINESS.</p>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
+
+<!-- Start a Project - Belac Media (Grounded) -->
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Let's Chat | BELAC MEDIA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Serif:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#e2e2e2",
+                        "on-tertiary-container": "#3b3b3b",
+                        "on-secondary-container": "#bab8b7",
+                        "secondary-fixed": "#e5e2e1",
+                        "inverse-on-surface": "#2f3131",
+                        "secondary-container": "#4a4949",
+                        "on-primary-container": "#4e3700",
+                        "error-container": "#93000a",
+                        "on-error": "#690005",
+                        "surface": "#121414",
+                        "on-error-container": "#ffdad6",
+                        "on-surface": "#e2e2e2",
+                        "secondary": "#c9c6c5",
+                        "tertiary": "#c8c6c5",
+                        "inverse-primary": "#775a19",
+                        "inverse-surface": "#e2e2e2",
+                        "error": "#ffb4ab",
+                        "on-tertiary-fixed": "#1b1b1c",
+                        "on-primary-fixed": "#261900",
+                        "surface-variant": "#333535",
+                        "on-primary-fixed-variant": "#5d4201",
+                        "on-secondary": "#313030",
+                        "surface-dim": "#121414",
+                        "surface-bright": "#37393a",
+                        "on-tertiary": "#303030",
+                        "on-secondary-fixed": "#1c1b1b",
+                        "tertiary-fixed": "#e5e2e1",
+                        "surface-container-high": "#282a2b",
+                        "surface-container-highest": "#333535",
+                        "background": "#121414",
+                        "outline-variant": "#4e4639",
+                        "primary-fixed": "#ffdea5",
+                        "on-tertiary-fixed-variant": "#474746",
+                        "primary": "#e9c176",
+                        "primary-container": "#c5a059",
+                        "primary-fixed-dim": "#e9c176",
+                        "surface-container-lowest": "#0c0f0f",
+                        "on-surface-variant": "#d1c5b4",
+                        "surface-container": "#1e2020",
+                        "on-secondary-fixed-variant": "#474646",
+                        "surface-container-low": "#1a1c1c",
+                        "tertiary-container": "#a7a5a5",
+                        "secondary-fixed-dim": "#c9c6c5",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "outline": "#9a8f80",
+                        "on-primary": "#412d00",
+                        "surface-tint": "#e9c176"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-page": "80px",
+                        "section-gap": "160px",
+                        "unit": "8px",
+                        "gutter": "32px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-xl": ["Noto Serif"],
+                        "headline-lg": ["Noto Serif"],
+                        "headline-md": ["Noto Serif"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["20px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-xl": ["84px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "headline-md": ["32px", {"lineHeight": "1.3", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .gilded-border {
+            border: 1px solid #333535;
+        }
+        .gold-gradient-bg {
+            background: #e9c176;
+        }
+        .mantle-layer {
+            background-color: #1a1c1c;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased selection:bg-primary selection:text-on-primary">
+<!-- TopAppBar Shell -->
+<nav class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-page py-6 max-w-container-max mx-auto bg-surface/80 backdrop-blur-xl border-b border-white/5">
+<div class="font-headline-md text-headline-md font-bold text-primary tracking-tighter">BELAC MEDIA</div>
+<!-- Desktop Navigation -->
+<div class="hidden md:flex items-center gap-gutter">
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300" href="#">Strategy</a>
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300" href="#">Content</a>
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300" href="#">Dev</a>
+<a class="text-on-surface-variant font-medium pb-1 hover:text-primary transition-colors duration-300" href="#">Work</a>
+</div>
+<button class="gold-gradient-bg text-on-primary px-6 py-3 font-label-sm uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all">
+            Start a Project
+        </button>
+</nav>
+<main class="pt-32 pb-section-gap max-w-container-max mx-auto px-margin-page">
+<!-- Hero Header -->
+<header class="mb-20">
+<span class="font-label-sm text-label-sm uppercase tracking-[0.3em] text-primary block mb-6">Connect with us</span>
+<h1 class="font-display-xl text-display-xl text-on-surface max-w-4xl">Let's chat about your project.</h1>
+</header>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Inquiry Form Container -->
+<section class="lg:col-span-7 mantle-layer border border-outline/20 p-10 md:p-12 rounded-lg">
+<form class="space-y-10">
+<div class="space-y-6">
+<p class="font-body-lg text-on-surface-variant">Tell us a bit about yourself and what you're looking to achieve. We'll keep things simple.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="relative group">
+<label class="font-label-sm text-label-sm uppercase text-outline mb-2 block group-focus-within:text-primary transition-colors">Name</label>
+<input class="w-full bg-transparent border-0 border-b border-outline/40 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-variant py-2 transition-all" placeholder="How should we call you?" type="text"/>
+</div>
+<div class="relative group">
+<label class="font-label-sm text-label-sm uppercase text-outline mb-2 block group-focus-within:text-primary transition-colors">Email</label>
+<input class="w-full bg-transparent border-0 border-b border-outline/40 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-variant py-2 transition-all" placeholder="Your best contact email" type="email"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="relative group">
+<label class="font-label-sm text-label-sm uppercase text-outline mb-2 block group-focus-within:text-primary transition-colors">Company</label>
+<input class="w-full bg-transparent border-0 border-b border-outline/40 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-variant py-2 transition-all" placeholder="Where do you work?" type="text"/>
+</div>
+<div class="relative group">
+<label class="font-label-sm text-label-sm uppercase text-outline mb-2 block group-focus-within:text-primary transition-colors">What's on your mind?</label>
+<select class="w-full bg-transparent border-0 border-b border-outline/40 focus:border-primary focus:ring-0 text-on-surface py-2 transition-all appearance-none cursor-pointer">
+<option class="bg-surface">General Strategy</option>
+<option class="bg-surface">Content Production</option>
+<option class="bg-surface">Software &amp; Dev</option>
+<option class="bg-surface">Not sure yet, let's explore</option>
+</select>
+</div>
+</div>
+<div class="relative group">
+<label class="font-label-sm text-label-sm uppercase text-outline mb-2 block group-focus-within:text-primary transition-colors">A few details</label>
+<textarea class="w-full bg-transparent border-0 border-b border-outline/40 focus:border-primary focus:ring-0 text-on-surface placeholder:text-surface-variant py-2 transition-all resize-none" placeholder="Briefly describe your goals or any questions you have." rows="3"></textarea>
+</div>
+</div>
+<div class="flex flex-col md:flex-row items-center justify-between gap-6 pt-6 border-t border-outline/10">
+<p class="font-body-md text-on-surface-variant/80 italic">We'll get back to you personally within 24 hours.</p>
+<button class="w-full md:w-auto gold-gradient-bg text-on-primary px-12 py-4 font-label-sm uppercase tracking-widest hover:brightness-110 active:scale-95 transition-all" type="submit">Send Message</button>
+</div>
+</form>
+</section>
+<!-- Sidebar Context -->
+<aside class="lg:col-span-5 space-y-gutter">
+<!-- Reliability Promise Card -->
+<div class="mantle-layer border border-outline/20 p-8 rounded-lg">
+<span class="material-symbols-outlined text-primary text-3xl mb-4" data-icon="timer">timer</span>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-3">Our 5-Day Promise</h3>
+<p class="font-body-md text-on-surface-variant leading-relaxed">We value your time. Once we decide to work together, our commitment is to have your project operational and moving within <span class="text-primary font-semibold">5 business days</span> of signing. No long waitlists, just practical execution.</p>
+</div>
+<!-- Commercial Models Card -->
+<div class="mantle-layer border border-outline/20 p-8 rounded-lg">
+<h3 class="font-label-sm text-primary uppercase tracking-widest mb-6">Simple Ways to Work Together</h3>
+<div class="space-y-6">
+<div>
+<h4 class="font-body-lg text-on-surface font-semibold mb-1">Ongoing Partnerships</h4>
+<p class="font-body-md text-on-surface-variant">Continuous support and advisory on a monthly basis. We're part of your team.</p>
+</div>
+<div>
+<h4 class="font-body-lg text-on-surface font-semibold mb-1">Fixed Projects</h4>
+<p class="font-body-md text-on-surface-variant">Clear deliverables with a defined scope and a set timeline for specific goals.</p>
+</div>
+</div>
+</div>
+<!-- Minimal Image Block -->
+<div class="rounded-lg overflow-hidden h-[240px] relative">
+<img alt="Quiet workspace" class="w-full h-full object-cover grayscale opacity-40" src="https://lh3.googleusercontent.com/aida/ADBb0ug-QzkM6bjd2ZAd2MMCqvteb-wlURazzUWEAG9AehsooBnsIgB1bV3h8XJAbhIi0vFKkVMOsavwhzm4yhQbUrJ61954SZfa2LoSIHfbVzNYS6UX14EIjl-AFuNSAhEjs0XgQ6DnukymvO6LD3aC5heHBHAHvMN6nWWhdEZTruDn5IPkCgKRgagK9nYpmcLomJSdrvPfQ5nu7gxha1PIbeZBAmXbAEJhN9PuCJRv9dU_3ACWMDaH6USwh-idY4eITyvJmHkQ8iRN"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+<div class="absolute bottom-6 left-6">
+<p class="font-label-sm text-on-surface-variant uppercase tracking-widest">Built for your progress.</p>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer Shell -->
+<footer class="w-full py-24 px-margin-page flex flex-col md:flex-row justify-between items-start bg-surface border-t border-outline/10">
+<div class="mb-12 md:mb-0">
+<div class="font-headline-lg text-headline-lg text-primary mb-4">BELAC MEDIA</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant max-w-xs leading-relaxed uppercase tracking-widest">
+                © 2024 BELAC MEDIA. RELIABLE PARTNERSHIP.
+            </p>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-x-16 gap-y-8">
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-primary uppercase tracking-widest">Services</span>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Strategy</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Content</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Dev</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-primary uppercase tracking-widest">Resources</span>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Case Studies</a>
+<a class="text-primary hover:brightness-125 transition-colors font-body-md" href="#">Contact Us</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Privacy</a>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-sm text-primary uppercase tracking-widest">Social</span>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">LinkedIn</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Instagram</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors font-body-md" href="#">Twitter/X</a>
+</div>
+</div>
+</footer>
+</body></html>
