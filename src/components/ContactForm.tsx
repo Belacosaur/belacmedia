@@ -31,12 +31,12 @@ export default function ContactForm() {
     }
     if (message.trim().length < 20) {
       setState('error')
-      setError('Please share at least 20 characters about your project.')
+      setError('Please share at least 20 characters about what you need help with.')
       return
     }
 
     setState('submitting')
-    trackEvent('submit_contact_form')
+    trackEvent('submit_contact_form', { form_id: 'marketing_contact' })
     try {
       await submitContactLead({
         name: name.trim(),
@@ -55,7 +55,7 @@ export default function ContactForm() {
     } catch (submitError) {
       setState('error')
       setError(submitError instanceof Error ? submitError.message : 'Unable to submit your request.')
-      trackEvent('submit_contact_form_error')
+      trackEvent('submit_contact_form_error', { form_id: 'marketing_contact' })
     }
   }
 
@@ -74,7 +74,7 @@ export default function ContactForm() {
         <input value={company} onChange={(e) => setCompany(e.target.value)} />
       </label>
       <label className="field">
-        Project goals
+        What needs to come off your plate?
         <textarea rows={4} value={message} onChange={(e) => setMessage(e.target.value)} required />
       </label>
 

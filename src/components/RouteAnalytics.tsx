@@ -6,8 +6,9 @@ export default function RouteAnalytics() {
   const location = useLocation()
 
   useEffect(() => {
-    trackPage(location.pathname)
-  }, [location.pathname])
+    const path = `${location.pathname}${location.search}`
+    trackPage(path)
+  }, [location.pathname, location.search])
 
   return null
 }
