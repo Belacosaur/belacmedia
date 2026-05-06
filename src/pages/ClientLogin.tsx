@@ -74,7 +74,7 @@ export default function ClientLogin() {
       window.google.accounts.id.renderButton(googleBtnRef.current, {
         theme: 'outline',
         size: 'large',
-        width: 320,
+        width: 280,
         text: 'continue_with',
       })
       setGoogleReady(true)
@@ -126,78 +126,118 @@ export default function ClientLogin() {
   const showGoogle = Boolean(import.meta.env.VITE_GOOGLE_CLIENT_ID)
 
   return (
-    <div className="portal-page">
+    <div className="portal-page client-login-page">
       <header className="portal-header">
         <Link to="/app" className="portal-header-brand" aria-label="Back to portal">
           <BrandLogo variant="header" decorative />
           <span className="portal-header-brand-text">Portal</span>
         </Link>
       </header>
-      <main className="portal-main">
-        <div className="panel" style={{ maxWidth: 400 }}>
-          <div style={{ textAlign: 'center' }}>
-            <BrandLogo variant="panel" />
-          </div>
-          <h2 style={{ marginTop: '0.35rem' }}>Client sign in</h2>
-          {resetOk ? (
-            <p className="panel-notice" style={{ marginBottom: '1rem' }}>
-              Password updated. You can sign in below.
+      <main className="portal-main portal-main--client-login" id="main-content">
+        <div className="client-login-layout">
+          <section className="client-login-pitch" aria-labelledby="client-login-pitch-title">
+            <p className="client-login-eyebrow">Belac Media · Client workspace</p>
+            <h1 id="client-login-pitch-title">
+              Invoices, payments, and receipts — without the back-and-forth.
+            </h1>
+            <p className="client-login-lead">
+              This portal is how we keep commercial work tidy: you always see what&apos;s owed,
+              what&apos;s paid, and how to pay — so your team spends less time chasing paperwork.
             </p>
-          ) : null}
-          {showGoogle ? (
-            <div style={{ marginBottom: '1.25rem' }}>
-              <div ref={googleBtnRef} className="google-signin-slot" />
-              {!googleReady ? (
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-                  Loading Google…
+            <ul className="client-login-benefits">
+              <li>
+                <strong>Quotes &amp; invoices in one flow.</strong>
+                Draft scope becomes a clean invoice you can trust — line items, GST where it
+                applies, and a paper trail you can forward internally.
+              </li>
+              <li>
+                <strong>Direct ways to pay.</strong>
+                Pay by card when checkout is enabled, or use the bank details on every invoice — no
+                guessing which account or reference to use.
+              </li>
+              <li>
+                <strong>Proof when finance asks.</strong>
+                Download PDFs and receipts anytime; your history stays in one place instead of lost
+                threads.
+              </li>
+            </ul>
+            <p className="client-login-foot">
+              Running a studio or agency?{' '}
+              <Link to="/#contact">Ask us about a client portal like this</Link> — we design and
+              ship the whole stack.
+            </p>
+          </section>
+
+          <section className="client-login-card-wrap" aria-labelledby="client-login-form-title">
+            <div className="panel client-login-panel">
+              <div className="client-login-panel-head">
+                <BrandLogo variant="panel" decorative />
+                <div>
+                  <h2 id="client-login-form-title" className="client-login-panel-title">
+                    Sign in
+                  </h2>
+                  <p className="client-login-panel-sub">Access your invoices and payments.</p>
+                </div>
+              </div>
+
+              {resetOk ? (
+                <p className="panel-notice client-login-reset-banner" role="status">
+                  Password updated — you can sign in below.
                 </p>
               ) : null}
-              <p
-                style={{
-                  textAlign: 'center',
-                  fontSize: '0.75rem',
-                  color: 'var(--text-muted)',
-                  margin: '0.75rem 0 0',
-                }}
-              >
-                or email & password
-              </p>
+
+              {showGoogle ? (
+                <div className="client-login-google">
+                  <div ref={googleBtnRef} className="google-signin-slot" />
+                  {!googleReady ? (
+                    <p className="client-login-google-hint">Loading Google…</p>
+                  ) : null}
+                  <p className="client-login-divider">
+                    <span>or continue with email</span>
+                  </p>
+                </div>
+              ) : null}
+
+              <form className="client-login-form" onSubmit={onSubmit}>
+                <label className="field">
+                  Email
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    autoComplete="email"
+                    required
+                  />
+                </label>
+                <label className="field">
+                  Password
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                    required
+                  />
+                </label>
+                {error ? <p className="error client-login-error">{error}</p> : null}
+                <button type="submit" className="btn client-login-submit" disabled={loading}>
+                  {loading ? 'Signing in…' : 'Sign in'}
+                </button>
+              </form>
+
+              <nav className="client-login-links" aria-label="Other sign-in options">
+                <Link to="/app/forgot-password" className="link-inline">
+                  Forgot password?
+                </Link>
+                <span className="client-login-links-sep" aria-hidden>
+                  ·
+                </span>
+                <Link to="/app/client/magic" className="link-inline">
+                  Have a magic portal link?
+                </Link>
+              </nav>
             </div>
-          ) : null}
-          <form onSubmit={onSubmit}>
-            <label className="field">
-              Email
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </label>
-            <label className="field" style={{ marginTop: '0.75rem' }}>
-              Password
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </label>
-            {error ? <p className="error">{error}</p> : null}
-            <button type="submit" className="btn" disabled={loading} style={{ marginTop: '1rem' }}>
-              {loading ? 'Signing in…' : 'Sign in'}
-            </button>
-          </form>
-          <p style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
-            <Link to="/app/forgot-password" className="link-inline">
-              Forgot password?
-            </Link>
-          </p>
-          <p style={{ marginTop: '0.5rem', fontSize: '0.85rem' }}>
-            <Link to="/app/client/magic" className="link-inline">
-              Have a portal link instead?
-            </Link>
-          </p>
+          </section>
         </div>
       </main>
     </div>

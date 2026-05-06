@@ -90,12 +90,12 @@ export default function ContactForm() {
       </label>
 
       <button type="submit" className="cta" disabled={state === 'submitting'}>
-        {state === 'submitting' ? 'Sending...' : 'Send request'}
+        {state === 'submitting' ? 'Submitting…' : 'Send request'}
       </button>
 
       {state === 'success' ? (
         <p className="success-text" role="status">
-          Thanks, your request has been received. We will reply shortly.
+          Thanks — your request has been saved. We&apos;ll get back to you soon.
         </p>
       ) : null}
       {state === 'error' && error ? (
