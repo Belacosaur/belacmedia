@@ -63,12 +63,8 @@ export default function ForgotPassword() {
             </form>
           )}
           <p style={{ marginTop: '1rem', fontSize: '0.85rem' }}>
-            <Link to="/app/client/login" className="link-inline">
-              Client sign in
-            </Link>
-            {' · '}
-            <Link to="/app/admin/login" className="link-inline">
-              Admin sign in
+            <Link to="/app/login" className="link-inline">
+              Back to sign in
             </Link>
           </p>
         </div>

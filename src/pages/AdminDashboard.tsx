@@ -122,7 +122,7 @@ export default function AdminDashboard() {
         msg.toLowerCase().includes('missing authorization')
       ) {
         clearToken()
-        nav('/app/admin/login', { replace: true })
+        nav('/app/login', { replace: true })
       }
     }
   }, [invoiceSearch, invoiceStatusFilter, nav, tab])

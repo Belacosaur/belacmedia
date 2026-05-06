@@ -35,7 +35,7 @@ export default function ResetPassword() {
         method: 'POST',
         body: JSON.stringify({ token, password }),
       })
-      nav('/app/client/login', { replace: true, state: { resetOk: true } })
+      nav('/app/login', { replace: true, state: { resetOk: true } })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Reset failed')
     } finally {
@@ -91,12 +91,8 @@ export default function ResetPassword() {
               Request another link
             </Link>
             {' · '}
-            <Link to="/app/client/login" className="link-inline">
-              Client sign in
-            </Link>
-            {' · '}
-            <Link to="/app/admin/login" className="link-inline">
-              Admin sign in
+            <Link to="/app/login" className="link-inline">
+              Back to sign in
             </Link>
           </p>
         </div>
