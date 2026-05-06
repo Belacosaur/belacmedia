@@ -31,6 +31,21 @@ function validateMeasurementId(id: string): boolean {
   return /^G-[A-Z0-9]+$/i.test(id)
 }
 
+function resolveSitemapLastmod(env: Record<string, string>): string {
+  const explicit = env.VITE_SITEMAP_LASTMOD?.trim()
+  if (explicit && /^\d{4}-\d{2}-\d{2}$/.test(explicit)) return explicit
+
+  const sourceEpoch = env.SOURCE_DATE_EPOCH?.trim()
+  if (sourceEpoch && /^\d+$/.test(sourceEpoch)) {
+    const millis = Number(sourceEpoch) * 1000
+    if (Number.isFinite(millis)) {
+      return new Date(millis).toISOString().slice(0, 10)
+    }
+  }
+
+  return new Date().toISOString().slice(0, 10)
+}
+
 /** Emit crawlers/sitemap.xml + robots.txt into dist using VITE_SITE_ORIGIN (overrides public/ copy). */
 function seoFilesPlugin(mode: string): Plugin {
   return {
@@ -39,7 +54,7 @@ function seoFilesPlugin(mode: string): Plugin {
       const env = loadEnv(mode, process.cwd(), '')
       const origin = (env.VITE_SITE_ORIGIN || 'https://belacmedia.com').replace(/\/$/, '')
       const distDir = path.resolve(process.cwd(), 'dist')
-      const lastmod = new Date().toISOString().slice(0, 10)
+      const lastmod = resolveSitemapLastmod(env)
       const paths = ['/', '/privacy', '/terms', '/brand']
       let xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
       xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
@@ -52,7 +67,7 @@ function seoFilesPlugin(mode: string): Plugin {
         xml += '  </url>\n'
       }
       xml += '</urlset>\n'
-      const robots = `User-agent: *\nAllow: /\nDisallow: /app/\n\nSitemap: ${origin}/sitemap.xml\n`
+      const robots = `User-agent: *\nAllow: /\n\nSitemap: ${origin}/sitemap.xml\n`
       fs.mkdirSync(distDir, { recursive: true })
       fs.writeFileSync(path.join(distDir, 'robots.txt'), robots)
       fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xml)

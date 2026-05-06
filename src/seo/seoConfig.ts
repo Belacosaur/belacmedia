@@ -85,15 +85,15 @@ export function buildHeadInnerHtml(siteOrigin: string, pathname: string): string
   return `${tags.join('\n')}\n`
 }
 
-/** Shared default OG/Twitter image (site logo); dimensions must match OG_IMAGE_META. */
-export const DEFAULT_OG_IMAGE_PATH = '/symbolhorizontallogo.png'
+/** Shared default OG/Twitter image for public pages (1200x630 social card). */
+export const DEFAULT_OG_IMAGE_PATH = '/og-default.jpg'
 
-/** Measured from public asset for og:image meta (PNG). */
+/** Measured from public asset for og:image meta. */
 export const OG_IMAGE_META = {
   urlPath: DEFAULT_OG_IMAGE_PATH,
-  width: 1657,
-  height: 462,
-  type: 'image/png' as const,
+  width: 1200,
+  height: 630,
+  type: 'image/jpeg' as const,
 }
 
 export const SOCIAL_PROFILES = ['https://www.facebook.com/profile.php?id=61588945905996'] as const
@@ -208,7 +208,27 @@ export function buildJsonLd(siteOrigin: string): object[] {
     publisher: { '@type': 'Organization', name: 'Belac Media' },
   }
 
-  return [org, website]
+  // Keep this conservative: no phone/street claims, only geography and service focus.
+  const service = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: 'Belac Media',
+    url: `${siteOrigin}/`,
+    image: absoluteUrl(siteOrigin, DEFAULT_OG_IMAGE_PATH),
+    areaServed: {
+      '@type': 'Country',
+      name: 'Australia',
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Perth',
+      addressRegion: 'WA',
+      addressCountry: 'AU',
+    },
+    sameAs: [...SOCIAL_PROFILES],
+  }
+
+  return [org, website, service]
 }
 
 export const INDEXABLE_SITEMAP_PATHS = ['/', '/privacy', '/terms', '/brand'] as const
