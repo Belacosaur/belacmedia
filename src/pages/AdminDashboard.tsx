@@ -1087,7 +1087,7 @@ export default function AdminDashboard() {
                   </select>
                 </label>
                 <label className="field">
-                  Every N periods
+                  Repeat every
                   <input
                     type="number"
                     min={1}
@@ -1097,6 +1097,16 @@ export default function AdminDashboard() {
                     }
                   />
                 </label>
+                <div
+                  style={{
+                    alignSelf: 'end',
+                    fontSize: '0.78rem',
+                    color: 'var(--text-muted)',
+                    marginBottom: '0.25rem',
+                  }}
+                >
+                  1 = every interval, 12 monthly = yearly
+                </div>
                 <label className="field">
                   Due days after run
                   <input
