@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { FaFacebookSquare } from 'react-icons/fa'
 import BrandLogo from '../components/BrandLogo'
@@ -9,13 +9,18 @@ import { trackEvent } from '../lib/analytics'
 import '../App.css'
 import '../marketing-design.css'
 
-const NAV = [
-  { href: '#services', label: 'Services' },
-  { href: '#onboarding', label: 'Roadmap' },
-  { href: '#work', label: 'Work' },
-  { href: '#process', label: 'Process' },
-  { href: '#about', label: 'About' },
-  { href: '#contact', label: 'Contact' },
+type NavItem =
+  | { kind: 'section'; hash: string; label: string }
+  | { kind: 'route'; to: string; label: string }
+
+const NAV: NavItem[] = [
+  { kind: 'section', hash: 'services', label: 'Services' },
+  { kind: 'section', hash: 'onboarding', label: 'Roadmap' },
+  { kind: 'section', hash: 'work', label: 'Work' },
+  { kind: 'section', hash: 'process', label: 'Process' },
+  { kind: 'section', hash: 'about', label: 'About' },
+  { kind: 'section', hash: 'contact', label: 'Contact' },
+  { kind: 'route', to: '/brand', label: 'Brand kit' },
 ]
 
 const ONBOARDING_STEPS = [
@@ -50,6 +55,18 @@ const sectionReveal = {
 export default function MarketingHome() {
   const [menuOpen, setMenuOpen] = useState(false)
   const reduce = useReducedMotion()
+  const location = useLocation()
+
+  useEffect(() => {
+    const id = location.hash.replace(/^#/, '')
+    if (!id) return
+    const el = document.getElementById(id)
+    if (!el) return
+    const t = window.requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    })
+    return () => window.cancelAnimationFrame(t)
+  }, [location.hash, reduce])
 
   useEffect(() => {
     if (menuOpen) {
@@ -82,11 +99,21 @@ export default function MarketingHome() {
         </Link>
 
         <nav className="bp-nav-desktop" aria-label="Primary">
-          {NAV.map((item) => (
-            <a key={item.href} className="bp-nav-link" href={item.href}>
-              {item.label}
-            </a>
-          ))}
+          {NAV.map((item) =>
+            item.kind === 'route' ? (
+              <Link key={item.to} className="bp-nav-link" to={item.to}>
+                {item.label}
+              </Link>
+            ) : (
+              <Link
+                key={item.hash}
+                className="bp-nav-link"
+                to={{ pathname: '/', hash: `#${item.hash}` }}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="header-actions">
@@ -123,16 +150,27 @@ export default function MarketingHome() {
         aria-hidden={!menuOpen}
       >
         <nav aria-label="Mobile primary">
-          {NAV.map((item) => (
-            <a
-              key={item.href}
-              className="bp-nav-mobile__link"
-              href={item.href}
-              onClick={() => setMenuOpen(false)}
-            >
-              {item.label}
-            </a>
-          ))}
+          {NAV.map((item) =>
+            item.kind === 'route' ? (
+              <Link
+                key={item.to}
+                className="bp-nav-mobile__link"
+                to={item.to}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <Link
+                key={item.hash}
+                className="bp-nav-mobile__link"
+                to={{ pathname: '/', hash: `#${item.hash}` }}
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
           <Link
             to="/app"
             className="bp-nav-mobile__link"
@@ -522,7 +560,8 @@ export default function MarketingHome() {
             <p className="footer-marketing-copy">
               © {new Date().getFullYear()} Belac Media · Perth, WA
             </p>
-            <nav className="footer-marketing-legal" aria-label="Legal">
+            <nav className="footer-marketing-legal" aria-label="Legal and resources">
+              <Link to="/brand">Brand kit</Link>
               <Link to="/privacy">Privacy</Link>
               <Link to="/terms">Terms</Link>
             </nav>

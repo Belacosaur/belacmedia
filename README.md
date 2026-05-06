@@ -1,5 +1,10 @@
 # Belac Media Frontend
 
+## Brand kit
+
+- **Interactive:** [`/brand`](https://belacmedia.com/brand) — logos, colours, type, voice, CSS reference.
+- **Static exports:** `public/brand/` — `tokens.json`, `belac-media-brand-kit.md`, `README.md`.
+
 ## Local development
 
 - Install dependencies: `npm ci`

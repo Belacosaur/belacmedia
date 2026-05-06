@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import './portal.css'
 import RequireRole from './components/RequireRole'
 import AppHub from './pages/AppHub'
+import BrandKit from './pages/BrandKit'
 import MarketingHome from './pages/MarketingHome'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Terms from './pages/Terms'
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/" element={<MarketingHome />} />
         <Route path="/privacy" element={<PrivacyPolicy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/brand" element={<BrandKit />} />
         <Route path="/app" element={<AppHub />} />
         <Route path="/app/admin/setup" element={<AdminSetup />} />
         <Route path="/app/admin/login" element={<AdminLogin />} />
