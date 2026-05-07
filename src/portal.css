@@ -992,6 +992,123 @@ button.btn-icon {
   white-space: nowrap;
 }
 
+/* Admin — invoice list intelligence (breakdown, source, GST) */
+.admin-inv-client-cell {
+  max-width: 11rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.admin-inv-client-email {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  word-break: break-word;
+  margin-top: 0.15rem;
+}
+
+.admin-inv-detail-cell {
+  max-width: 26rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  vertical-align: top;
+}
+
+.admin-inv-badge {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.14rem 0.38rem;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+
+.admin-inv-badge--recurring {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.admin-inv-badge--manual {
+  background: var(--fill-quaternary);
+  color: var(--text-muted);
+}
+
+.admin-inv-cadence {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+}
+
+.admin-inv-coverage {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  margin-top: 0.3rem;
+}
+
+.admin-inv-note {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-body);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.admin-inv-line-list {
+  margin: 0.35rem 0 0;
+  padding-left: 1.05rem;
+  font-size: 0.76rem;
+  color: var(--text-body);
+}
+
+.admin-inv-line-list li {
+  margin: 0.12rem 0;
+}
+
+.admin-inv-warn {
+  font-size: 0.72rem;
+  color: #b45309;
+  margin-top: 0.35rem;
+  max-width: 22rem;
+}
+
+.admin-inv-money-cell {
+  vertical-align: top;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-inv-money-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.22rem;
+  font-weight: 500;
+  white-space: normal;
+  max-width: 10rem;
+}
+
+.admin-inv-dates-cell {
+  vertical-align: top;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.schedule-template-preview {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--fill-quaternary);
+  max-width: 42rem;
+}
+
+.schedule-cadence-explainer {
+  border-left: 3px solid var(--accent);
+  padding-left: 0.65rem;
+}
+
 @media (max-width: 640px) {
   .clients-table,
   .invoices-table,
@@ -1062,18 +1179,21 @@ button.btn-icon {
   .clients-table td:nth-child(4)::before { content: 'Actions'; }
 
   .invoices-table td:nth-child(1)::before { content: 'Invoice'; }
-  .invoices-table td:nth-child(2)::before { content: 'Status'; }
-  .invoices-table td:nth-child(3)::before { content: 'Amount'; }
-  .invoices-table td:nth-child(4)::before { content: 'Due'; }
-  .invoices-table td:nth-child(5)::before { content: 'Actions'; }
+  .invoices-table td:nth-child(2)::before { content: 'Client'; }
+  .invoices-table td:nth-child(3)::before { content: 'Detail'; }
+  .invoices-table td:nth-child(4)::before { content: 'Total'; }
+  .invoices-table td:nth-child(5)::before { content: 'Dates'; }
+  .invoices-table td:nth-child(6)::before { content: 'Status'; }
+  .invoices-table td:nth-child(7)::before { content: 'Actions'; }
 
   .schedules-table td:nth-child(1)::before { content: 'Client'; }
   .schedules-table td:nth-child(2)::before { content: 'Label'; }
   .schedules-table td:nth-child(3)::before { content: 'Next run'; }
-  .schedules-table td:nth-child(4)::before { content: 'Interval'; }
+  .schedules-table td:nth-child(4)::before { content: 'Cadence'; }
   .schedules-table td:nth-child(5)::before { content: 'Due days'; }
-  .schedules-table td:nth-child(6)::before { content: 'Amount'; }
-  .schedules-table td:nth-child(7)::before { content: 'Active'; }
+  .schedules-table td:nth-child(6)::before { content: 'Per invoice'; }
+  .schedules-table td:nth-child(7)::before { content: 'Invoices sent'; }
+  .schedules-table td:nth-child(8)::before { content: 'Active'; }
 
   .contact-leads-table td:nth-child(1)::before { content: 'Received'; }
   .contact-leads-table td:nth-child(2)::before { content: 'Name'; }

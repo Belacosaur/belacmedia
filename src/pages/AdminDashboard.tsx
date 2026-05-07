@@ -1,16 +1,34 @@
 import { QRCodeSVG } from 'qrcode.react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiBlob, apiJson, clearToken } from '../api'
 import BrandLogo from '../components/BrandLogo'
+import { formatAudCents, lineAmountCents } from '../formatMoney'
 import {
   collectLineItemsFromRows,
   defaultDueDate,
   defaultScheduleRun,
   newCustomLine,
   audToCents,
+  cadencePresetToInterval,
+  extractCoveragePeriod,
+  formatAdminDueDate,
+  formatAdminIssuedDate,
+  formatAdminLineBreakdown,
+  hasNonUnitQuantities,
+  invoiceNoteExcludingCoverage,
+  parseInvoiceLineItems,
+  scheduleCadenceCoverageExplanation,
+  scheduleCadenceShort,
+  SCHEDULE_CADENCE_OPTIONS,
 } from './adminDashboardUtils'
-import type { Client, Invoice, Schedule, Template } from './adminDashboardUtils'
+import type {
+  Client,
+  Invoice,
+  Schedule,
+  ScheduleCadencePresetId,
+  Template,
+} from './adminDashboardUtils'
 import '../portal.css'
 
 type ContactLead = {
@@ -62,14 +80,25 @@ export default function AdminDashboard() {
     clientId: '',
     name: '',
     nextRunAt: defaultScheduleRun(),
+    cadencePreset: 'monthly_1' as ScheduleCadencePresetId,
     intervalUnit: 'monthly',
     intervalCount: 1,
+    occurrenceLimit: '',
     mode: 'template' as 'template' | 'custom',
     templateKey: 'default',
     scheduleDescription: '',
     customLines: [newCustomLine()],
     dueDaysAfterRun: 14,
   }))
+
+  const resolvedScheduleCadence = useMemo(() => {
+    return schForm.cadencePreset === 'custom'
+      ? {
+          intervalUnit: schForm.intervalUnit,
+          intervalCount: Math.max(1, schForm.intervalCount || 1),
+        }
+      : cadencePresetToInterval(schForm.cadencePreset)
+  }, [schForm.cadencePreset, schForm.intervalUnit, schForm.intervalCount])
 
   const load = useCallback(async () => {
     setError('')
@@ -320,13 +349,47 @@ export default function AdminDashboard() {
   async function createSchedule(e: React.FormEvent) {
     e.preventDefault()
     try {
+      const dupName =
+        schForm.name.trim() &&
+        schedules.some(
+          (s) =>
+            s.active &&
+            s.client_id === schForm.clientId &&
+            s.name.trim().toLowerCase() === schForm.name.trim().toLowerCase(),
+        )
+      if (
+        dupName &&
+        !window.confirm(
+          `You already have an active schedule named "${schForm.name.trim()}" for this client. Create another anyway?`,
+        )
+      ) {
+        return
+      }
+
+      const cadence =
+        schForm.cadencePreset === 'custom'
+          ? {
+              intervalUnit: schForm.intervalUnit,
+              intervalCount: Math.max(1, schForm.intervalCount || 1),
+            }
+          : cadencePresetToInterval(schForm.cadencePreset)
+
       const body: Record<string, unknown> = {
         clientId: schForm.clientId,
         name: schForm.name,
         nextRunAt: new Date(schForm.nextRunAt).toISOString(),
-        intervalUnit: schForm.intervalUnit,
-        intervalCount: schForm.intervalCount,
+        intervalUnit: cadence.intervalUnit,
+        intervalCount: cadence.intervalCount,
         dueDaysAfterRun: schForm.dueDaysAfterRun,
+      }
+      const ol = schForm.occurrenceLimit.trim()
+      if (ol) {
+        const n = Number(ol)
+        if (!Number.isFinite(n) || n < 1) {
+          setError('Stop after: enter a whole number ≥ 1, or leave blank for unlimited runs.')
+          return
+        }
+        body.occurrenceLimit = Math.floor(n)
       }
       if (schForm.mode === 'custom') {
         const lineItems = collectLineItemsFromRows(schForm.customLines)
@@ -348,6 +411,10 @@ export default function AdminDashboard() {
       setSchForm((f) => ({
         ...f,
         name: '',
+        occurrenceLimit: '',
+        cadencePreset: 'monthly_1',
+        intervalUnit: 'monthly',
+        intervalCount: 1,
         customLines: [newCustomLine()],
         scheduleDescription: '',
       }))
@@ -376,6 +443,46 @@ export default function AdminDashboard() {
       setError('')
       if (editingDraftId === id) resetInvoiceForm()
       setBanner({ type: 'ok', text: 'Invoice issued.' })
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed')
+    }
+  }
+
+  async function deleteDraftFromList(id: string) {
+    if (
+      !window.confirm(
+        'Permanently delete this draft? This cannot be undone (only drafts can be deleted).',
+      )
+    ) {
+      return
+    }
+    try {
+      await apiJson(`/api/admin/invoices/${id}`, { method: 'DELETE' })
+      setError('')
+      if (editingDraftId === id) resetInvoiceForm()
+      setBanner({ type: 'ok', text: 'Draft deleted.' })
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed')
+    }
+  }
+
+  async function voidInvoiceFromList(id: string) {
+    if (
+      !window.confirm(
+        'Void this invoice? It will be hidden from the client portal and cannot be paid. Paid invoices cannot be voided here.',
+      )
+    ) {
+      return
+    }
+    try {
+      await apiJson(`/api/admin/invoices/${id}/void`, {
+        method: 'POST',
+        body: JSON.stringify({}),
+      })
+      setError('')
+      setBanner({ type: 'ok', text: 'Invoice voided.' })
       await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed')
@@ -635,9 +742,19 @@ export default function AdminDashboard() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <h2 style={{ margin: 0 }}>{editingDraftId ? 'Edit draft invoice' : 'Create invoice'}</h2>
               {editingDraftId ? (
-                <button type="button" className="btn btn-ghost" onClick={() => resetInvoiceForm()}>
-                  Cancel edit
-                </button>
+                <>
+                  <button type="button" className="btn btn-ghost" onClick={() => resetInvoiceForm()}>
+                    Cancel edit
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    style={{ color: '#b91c1c' }}
+                    onClick={() => deleteDraftFromList(editingDraftId)}
+                  >
+                    Delete draft
+                  </button>
+                </>
               ) : null}
             </div>
             <form onSubmit={submitInvoice}>
@@ -853,8 +970,13 @@ export default function AdminDashboard() {
               )}
             </form>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
-              <strong>Templates</strong> are presets in <code>invoiceTemplates.js</code>.{' '}
-              <strong>Custom lines</strong> send your own amounts to the same PDF pipeline.
+              <strong>Templates</strong> are presets in <code>invoiceTemplates.js</code> — each creates{' '}
+              <strong>one invoice</strong> at the template line totals (not automatically split by month).{' '}
+              Use the <strong>Recurring</strong> tab for monthly automation.{' '}
+              <strong>Custom lines</strong> use the same PDF pipeline; the list below shows qty × unit so a
+              single total never hides what was billed.{' '}
+              <strong>Drafts</strong> can be deleted from the list; <strong>issued</strong> invoices can be{' '}
+              <strong>voided</strong> (hidden from clients, not payable). Paid invoices cannot be voided here.
             </p>
             <h2 style={{ marginTop: '1.5rem' }}>All invoices</h2>
             <div className="row" style={{ marginBottom: '0.75rem' }}>
@@ -902,20 +1024,101 @@ export default function AdminDashboard() {
             <table className="data invoices-table">
               <thead>
                 <tr>
-                  <th>#</th>
+                  <th>Invoice</th>
+                  <th>Client</th>
+                  <th>What&apos;s billed</th>
+                  <th>Total</th>
+                  <th>Dates</th>
                   <th>Status</th>
-                  <th>Amount</th>
-                  <th>Due</th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {invoices.map((i) => (
+                {invoices.map((i) => {
+                  const lines = parseInvoiceLineItems(i.line_items)
+                  const breakdown = formatAdminLineBreakdown(lines)
+                  const coverage = extractCoveragePeriod(i.description)
+                  const note = invoiceNoteExcludingCoverage(i.description)
+                  const fromSchedule = Boolean(i.source_schedule_id)
+                  const cadence = fromSchedule
+                    ? scheduleCadenceShort(
+                        i.source_schedule_interval_unit,
+                        i.source_schedule_interval_count ?? 1,
+                      )
+                    : ''
+                  const qtyWarning = hasNonUnitQuantities(lines)
+                  const sub = i.subtotal_cents
+                  const tax = i.tax_cents
+                  const showGst =
+                    tax != null &&
+                    Number(tax) > 0 &&
+                    sub != null &&
+                    Number.isFinite(Number(sub))
+
+                  return (
                   <tr key={i.id}>
-                    <td>{i.invoice_number}</td>
+                    <td>
+                      <strong>{i.invoice_number}</strong>
+                    </td>
+                    <td className="admin-inv-client-cell">
+                      <div>{i.client_name || '—'}</div>
+                      {i.client_email ? (
+                        <div className="admin-inv-client-email">{i.client_email}</div>
+                      ) : null}
+                    </td>
+                    <td className="admin-inv-detail-cell">
+                      <div>
+                        {fromSchedule ? (
+                          <span className="admin-inv-badge admin-inv-badge--recurring">Recurring</span>
+                        ) : (
+                          <span className="admin-inv-badge admin-inv-badge--manual">Manual</span>
+                        )}
+                        {fromSchedule && i.source_schedule_name ? (
+                          <span style={{ marginLeft: '0.35rem', fontWeight: 600 }}>{i.source_schedule_name}</span>
+                        ) : null}
+                        {cadence ? (
+                          <span className="admin-inv-cadence">({cadence})</span>
+                        ) : null}
+                      </div>
+                      {coverage ? (
+                        <div className="admin-inv-coverage">
+                          <strong>Period:</strong> {coverage}
+                        </div>
+                      ) : null}
+                      {note ? <div className="admin-inv-note">{note}</div> : null}
+                      {breakdown.length ? (
+                        <ul className="admin-inv-line-list">
+                          {breakdown.map((line, idx) => (
+                            <li key={`${i.id}-line-${idx}`}>{line}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <div className="admin-inv-coverage">No line items in payload</div>
+                      )}
+                      {qtyWarning ? (
+                        <div className="admin-inv-warn">
+                          Quantity other than 1 on at least one line — this row total is qty × unit for this
+                          invoice only.
+                        </div>
+                      ) : null}
+                    </td>
+                    <td className="admin-inv-money-cell">
+                      <strong>{formatAudCents(i.amount_cents)}</strong>
+                      {showGst ? (
+                        <div className="admin-inv-money-sub">
+                          Subtotal {formatAudCents(Number(sub))} · GST {formatAudCents(Number(tax))}
+                        </div>
+                      ) : null}
+                    </td>
+                    <td className="admin-inv-dates-cell">
+                      <div>
+                        <strong>Issued</strong> {formatAdminIssuedDate(i.created_at)}
+                      </div>
+                      <div style={{ marginTop: '0.2rem' }}>
+                        <strong>Due</strong> {formatAdminDueDate(i.due_date)}
+                      </div>
+                    </td>
                     <td>{i.status}</td>
-                    <td>{(i.amount_cents / 100).toFixed(2)} AUD</td>
-                    <td>{i.due_date}</td>
                     <td>
                       <button
                         type="button"
@@ -948,10 +1151,26 @@ export default function AdminDashboard() {
                           >
                             Issue
                           </button>
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            style={{ fontSize: '0.75rem', color: '#b91c1c' }}
+                            onClick={() => deleteDraftFromList(i.id)}
+                          >
+                            Delete draft
+                          </button>
                         </>
                       ) : null}
                       {i.status !== 'paid' && i.status !== 'void' && i.status !== 'draft' ? (
                         <>
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            style={{ fontSize: '0.75rem', color: '#b45309' }}
+                            onClick={() => voidInvoiceFromList(i.id)}
+                          >
+                            Void
+                          </button>
                           <button
                             type="button"
                             className="btn btn-ghost"
@@ -1008,7 +1227,8 @@ export default function AdminDashboard() {
                       ) : null}
                     </td>
                   </tr>
-                ))}
+                  )
+                })}
               </tbody>
             </table>
           </div>
@@ -1018,15 +1238,27 @@ export default function AdminDashboard() {
           <div className="panel">
             <h2>Recurring or scheduled billing</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 0 }}>
-              Each run creates an issued invoice. <strong>Due date</strong> is the run date plus the
-              offset below (default 14 days). Use <strong>Biweekly</strong> for every two weeks.
+              Each run creates one <strong>issued</strong> invoice. The due date is the run time plus the
+              offset below (default 14 days).
             </p>
-            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
-              <strong>Per-invoice lines only:</strong> enter what belongs on <em>one</em> invoice each run
-              (e.g. qty 1 × $250 for a monthly retainer). Do not put a full-year or full-contract total
-              here unless you truly intend one invoice for that whole amount. For twelve separate monthly
-              invoices, use <strong>Monthly</strong> with <strong>Repeat every 1</strong>.
-            </p>
+            <div className="panel-notice schedule-billing-notice" style={{ marginTop: '0.75rem' }}>
+              <p style={{ margin: '0 0 0.5rem', fontWeight: 600 }}>Read this once</p>
+              <ul style={{ margin: 0, paddingLeft: '1.15rem', fontSize: '0.82rem', lineHeight: 1.45 }}>
+                <li>
+                  <strong>Amount:</strong> With <strong>Use template</strong>, the dollar figure comes from
+                  the template (shown below when you pick one). To charge a different amount per run, switch
+                  to <strong>Custom lines</strong>.
+                </li>
+                <li>
+                  <strong>Twelve monthly invoices</strong> means cadence <strong>Every month</strong>, and
+                  optionally <strong>Stop after 12 invoices</strong> — not “repeat every 12 months”.
+                </li>
+                <li>
+                  “Repeat every N months” (advanced) stretches <strong>one invoice’s coverage</strong> across
+                  N months on the PDF. That is almost never what people mean by “12-month plan”.
+                </li>
+              </ul>
+            </div>
             <form onSubmit={createSchedule}>
               <div className="invoice-mode-toggle" role="group" aria-label="Schedule line source">
                 <button
@@ -1078,41 +1310,24 @@ export default function AdminDashboard() {
                     required
                   />
                 </label>
-                <label className="field">
-                  Interval
+                <label className="field" style={{ minWidth: 'min(100%, 22rem)' }}>
+                  How often should we invoice?
                   <select
-                    value={schForm.intervalUnit}
-                    onChange={(e) => setSchForm({ ...schForm, intervalUnit: e.target.value })}
+                    value={schForm.cadencePreset}
+                    onChange={(e) =>
+                      setSchForm({
+                        ...schForm,
+                        cadencePreset: e.target.value as ScheduleCadencePresetId,
+                      })
+                    }
                   >
-                    <option value="once">One-off</option>
-                    <option value="weekly">Weekly</option>
-                    <option value="biweekly">Biweekly</option>
-                    <option value="monthly">Monthly</option>
-                    <option value="quarterly">Quarterly</option>
-                    <option value="yearly">Yearly</option>
+                    {SCHEDULE_CADENCE_OPTIONS.map((opt) => (
+                      <option key={opt.id} value={opt.id}>
+                        {opt.label}
+                      </option>
+                    ))}
                   </select>
                 </label>
-                <label className="field">
-                  Repeat every
-                  <input
-                    type="number"
-                    min={1}
-                    value={schForm.intervalCount}
-                    onChange={(e) =>
-                      setSchForm({ ...schForm, intervalCount: Number(e.target.value) || 1 })
-                    }
-                  />
-                </label>
-                <div
-                  style={{
-                    alignSelf: 'end',
-                    fontSize: '0.78rem',
-                    color: 'var(--text-muted)',
-                    marginBottom: '0.25rem',
-                  }}
-                >
-                  1 = every interval, 12 monthly = yearly
-                </div>
                 <label className="field">
                   Due days after run
                   <input
@@ -1128,26 +1343,130 @@ export default function AdminDashboard() {
                     }
                   />
                 </label>
+                <label className="field">
+                  Stop after (optional)
+                  <input
+                    type="number"
+                    min={1}
+                    max={999}
+                    placeholder="Unlimited"
+                    value={schForm.occurrenceLimit}
+                    onChange={(e) => setSchForm({ ...schForm, occurrenceLimit: e.target.value })}
+                  />
+                </label>
               </div>
 
-              {schForm.mode === 'template' ? (
-                <div className="row" style={{ marginTop: '0.75rem', alignItems: 'flex-end' }}>
+              <p
+                className="schedule-cadence-explainer"
+                style={{
+                  margin: '0.5rem 0 0',
+                  fontSize: '0.82rem',
+                  lineHeight: 1.45,
+                  color: 'var(--text-muted)',
+                }}
+              >
+                {scheduleCadenceCoverageExplanation(
+                  resolvedScheduleCadence.intervalUnit,
+                  resolvedScheduleCadence.intervalCount,
+                )}
+              </p>
+
+              {schForm.cadencePreset === 'custom' ? (
+                <div className="row" style={{ marginTop: '0.65rem', alignItems: 'flex-end' }}>
                   <label className="field">
-                    Template
+                    Interval (advanced)
                     <select
-                      value={schForm.templateKey}
-                      onChange={(e) => setSchForm({ ...schForm, templateKey: e.target.value })}
+                      value={schForm.intervalUnit}
+                      onChange={(e) => setSchForm({ ...schForm, intervalUnit: e.target.value })}
                     >
-                      {templates.map((t) => (
-                        <option key={t.key} value={t.key}>
-                          {t.label}
-                        </option>
-                      ))}
+                      <option value="once">One-off</option>
+                      <option value="weekly">Weekly</option>
+                      <option value="biweekly">Biweekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="yearly">Yearly</option>
                     </select>
                   </label>
-                  <button type="submit" className="btn">
-                    Save schedule
-                  </button>
+                  <label className="field">
+                    Step / repeat every (advanced)
+                    <input
+                      type="number"
+                      min={1}
+                      max={99}
+                      value={schForm.intervalCount}
+                      onChange={(e) =>
+                        setSchForm({ ...schForm, intervalCount: Number(e.target.value) || 1 })
+                      }
+                    />
+                  </label>
+                  <div
+                    style={{
+                      alignSelf: 'end',
+                      fontSize: '0.76rem',
+                      color: '#b45309',
+                      maxWidth: '14rem',
+                      lineHeight: 1.35,
+                    }}
+                  >
+                    For monthly retainers this should almost always be <strong>1</strong>. Values above 1
+                    merge multiple months into one invoice.
+                  </div>
+                </div>
+              ) : null}
+
+              {schForm.mode === 'template' ? (
+                <div style={{ marginTop: '0.85rem' }}>
+                  <div className="row" style={{ alignItems: 'flex-end' }}>
+                    <label className="field">
+                      Template
+                      <select
+                        value={schForm.templateKey}
+                        onChange={(e) => setSchForm({ ...schForm, templateKey: e.target.value })}
+                      >
+                        {templates.map((t) => (
+                          <option key={t.key} value={t.key}>
+                            {t.label}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <button type="submit" className="btn">
+                      Save schedule
+                    </button>
+                  </div>
+                  {(() => {
+                    const tpl = templates.find((t) => t.key === schForm.templateKey)
+                    if (!tpl?.lineItems?.length) return null
+                    return (
+                      <div className="schedule-template-preview">
+                        <p style={{ margin: '0.65rem 0 0.35rem', fontWeight: 600, fontSize: '0.88rem' }}>
+                          Amount this schedule charges each run (from template)
+                        </p>
+                        <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.82rem' }}>
+                          {tpl.lineItems.map((row, idx) => (
+                            <li key={`${tpl.key}-${idx}`}>
+                              {row.description} ×{row.quantity} @ {formatAudCents(row.unitPriceCents)} →{' '}
+                              {formatAudCents(lineAmountCents(row.quantity, row.unitPriceCents))}
+                            </li>
+                          ))}
+                        </ul>
+                        <p style={{ margin: '0.45rem 0 0', fontSize: '0.82rem' }}>
+                          <strong>Subtotal:</strong> {formatAudCents(tpl.subtotalCents ?? 0)}
+                          {(tpl.taxCents ?? 0) > 0 ? (
+                            <>
+                              {' '}
+                              · <strong>GST:</strong> {formatAudCents(tpl.taxCents ?? 0)}
+                            </>
+                          ) : null}{' '}
+                          · <strong>Invoice total:</strong> {formatAudCents(tpl.totalCents ?? 0)}
+                        </p>
+                        <p style={{ margin: '0.35rem 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                          Need a different figure? Switch to <strong>Custom lines</strong> and enter qty × unit
+                          AUD per run.
+                        </p>
+                      </div>
+                    )
+                  })()}
                 </div>
               ) : (
                 <div className="custom-lines-block">
@@ -1276,9 +1595,10 @@ export default function AdminDashboard() {
                   <th>Client</th>
                   <th>Name</th>
                   <th>Next run</th>
-                  <th>Interval</th>
+                  <th>Cadence</th>
                   <th>Due +days</th>
-                  <th>Amount</th>
+                  <th>Per invoice</th>
+                  <th>Invoices sent</th>
                   <th>Active</th>
                 </tr>
               </thead>
@@ -1289,10 +1609,22 @@ export default function AdminDashboard() {
                     <td>{s.name}</td>
                     <td>{new Date(s.next_run_at).toLocaleString()}</td>
                     <td>
-                      {s.interval_unit} ×{s.interval_count}
+                      <span title={`${s.interval_unit} × ${s.interval_count}`}>
+                        {scheduleCadenceShort(s.interval_unit, s.interval_count)}
+                      </span>
                     </td>
                     <td>{s.due_days_after_run ?? 14}</td>
-                    <td>{(s.amount_cents / 100).toFixed(2)} AUD</td>
+                    <td>
+                      <strong>{formatAudCents(s.amount_cents)}</strong>
+                      <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>each automated run</div>
+                    </td>
+                    <td>
+                      {s.runs_completed ?? 0}
+                      {s.occurrence_limit != null ? ` / ${s.occurrence_limit}` : ''}
+                      {s.occurrence_limit == null ? (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}> (no limit)</span>
+                      ) : null}
+                    </td>
                     <td>
                       {s.active ? 'yes' : 'no'}
                       <div>
