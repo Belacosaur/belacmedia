@@ -148,7 +148,7 @@ export default function ClientInvoiceDetail() {
         {error ? <p className="error">{error}</p> : <p>Loading…</p>}
         <p>
           <Link to="/app/client" className="link-inline">
-            Back
+            ← Billing history
           </Link>
         </p>
       </div>
@@ -162,7 +162,7 @@ export default function ClientInvoiceDetail() {
     <div className="panel">
       <p>
         <Link to="/app/client" className="link-inline">
-          ← All invoices
+          ← Billing history
         </Link>
       </p>
       <h2>{invoice.invoice_number}</h2>

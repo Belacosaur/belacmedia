@@ -19,7 +19,7 @@ export default function ClientShell() {
             <BrandLogo variant="header" decorative />
           </Link>
           <Link to="/app/client" className="link-inline">
-            Your invoices
+            Billing history
           </Link>
         </div>
         <button type="button" className="btn btn-ghost" onClick={logout}>

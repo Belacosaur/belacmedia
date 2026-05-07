@@ -880,11 +880,122 @@ button.btn-icon {
   line-height: 1.45;
 }
 
+/* Client portal — billing history list (one row per invoice) */
+.billing-history-panel .billing-history-lead {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  max-width: 42rem;
+}
+
+.billing-history-empty {
+  margin: 0.5rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.billing-history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.billing-history-row {
+  display: grid;
+  grid-template-columns: 1.75rem minmax(8.5rem, auto) 1fr minmax(5.25rem, auto) auto;
+  gap: 0.65rem 1rem;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.billing-history-row--scheduled {
+  background: var(--fill-quaternary);
+  margin: 0 -0.35rem;
+  padding-left: 0.35rem;
+  padding-right: 0.35rem;
+  border-radius: var(--radius-sm);
+  border-bottom-color: var(--border-subtle);
+}
+
+.billing-history-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.billing-history-status--paid {
+  color: #169a52;
+}
+
+.billing-history-status--open,
+.billing-history-status--void {
+  color: var(--text-muted);
+}
+
+.billing-history-status--void {
+  opacity: 0.8;
+}
+
+.billing-history-status--scheduled {
+  color: var(--accent);
+}
+
+.billing-history-date {
+  font-size: 0.875rem;
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.billing-history-desc-wrap {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.billing-history-desc {
+  font-size: 0.9rem;
+  color: var(--text-heading);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.billing-history-subline {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.billing-history-amount {
+  text-align: right;
+  font-size: 0.925rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  color: var(--text-heading);
+}
+
+.billing-history-amount--dash {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.billing-history-view {
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
 @media (max-width: 640px) {
   .clients-table,
   .invoices-table,
   .schedules-table,
-  .client-invoices-table,
   .contact-leads-table {
     min-width: 0;
     border: none;
@@ -894,7 +1005,6 @@ button.btn-icon {
   .clients-table thead,
   .invoices-table thead,
   .schedules-table thead,
-  .client-invoices-table thead,
   .contact-leads-table thead {
     display: none;
   }
@@ -902,7 +1012,6 @@ button.btn-icon {
   .clients-table tbody,
   .invoices-table tbody,
   .schedules-table tbody,
-  .client-invoices-table tbody,
   .contact-leads-table tbody {
     display: grid;
     gap: 0.65rem;
@@ -911,7 +1020,6 @@ button.btn-icon {
   .clients-table tr,
   .invoices-table tr,
   .schedules-table tr,
-  .client-invoices-table tr,
   .contact-leads-table tr {
     display: grid;
     gap: 0.4rem;
@@ -925,7 +1033,6 @@ button.btn-icon {
   .clients-table td,
   .invoices-table td,
   .schedules-table td,
-  .client-invoices-table td,
   .contact-leads-table td {
     display: flex;
     justify-content: space-between;
@@ -940,7 +1047,6 @@ button.btn-icon {
   .clients-table td::before,
   .invoices-table td::before,
   .schedules-table td::before,
-  .client-invoices-table td::before,
   .contact-leads-table td::before {
     color: var(--text-muted);
     font-size: 0.71rem;
@@ -969,12 +1075,6 @@ button.btn-icon {
   .schedules-table td:nth-child(6)::before { content: 'Amount'; }
   .schedules-table td:nth-child(7)::before { content: 'Active'; }
 
-  .client-invoices-table td:nth-child(1)::before { content: 'Invoice'; }
-  .client-invoices-table td:nth-child(2)::before { content: 'Status'; }
-  .client-invoices-table td:nth-child(3)::before { content: 'Amount'; }
-  .client-invoices-table td:nth-child(4)::before { content: 'Due'; }
-  .client-invoices-table td:nth-child(5)::before { content: 'Action'; }
-
   .contact-leads-table td:nth-child(1)::before { content: 'Received'; }
   .contact-leads-table td:nth-child(2)::before { content: 'Name'; }
   .contact-leads-table td:nth-child(3)::before { content: 'Email'; }
@@ -992,7 +1092,6 @@ button.btn-icon {
   .clients-table td:last-child,
   .invoices-table td:last-child,
   .schedules-table td:last-child,
-  .client-invoices-table td:last-child,
   .contact-leads-table td:last-child {
     flex-direction: column;
     align-items: stretch;
@@ -1002,10 +1101,46 @@ button.btn-icon {
   .clients-table td:last-child button,
   .invoices-table td:last-child button,
   .schedules-table td:last-child button,
-  .client-invoices-table td:last-child button,
-  .client-invoices-table td:last-child a,
   .contact-leads-table td:last-child button {
     width: 100%;
     margin-right: 0 !important;
+  }
+
+  .billing-history-list {
+    border-top: none;
+  }
+
+  .billing-history-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+    padding: 0.85rem 0.75rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-elevated);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 0.65rem;
+    border-bottom: none;
+  }
+
+  .billing-history-row--scheduled {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .billing-history-row .billing-history-status {
+    justify-content: flex-start;
+  }
+
+  .billing-history-desc {
+    white-space: normal;
+  }
+
+  .billing-history-amount {
+    text-align: left;
+  }
+
+  .billing-history-view {
+    justify-self: start;
+    margin-top: 0.15rem;
   }
 }

@@ -1021,6 +1021,12 @@ export default function AdminDashboard() {
               Each run creates an issued invoice. <strong>Due date</strong> is the run date plus the
               offset below (default 14 days). Use <strong>Biweekly</strong> for every two weeks.
             </p>
+            <p style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.35rem' }}>
+              <strong>Per-invoice lines only:</strong> enter what belongs on <em>one</em> invoice each run
+              (e.g. qty 1 × $250 for a monthly retainer). Do not put a full-year or full-contract total
+              here unless you truly intend one invoice for that whole amount. For twelve separate monthly
+              invoices, use <strong>Monthly</strong> with <strong>Repeat every 1</strong>.
+            </p>
             <form onSubmit={createSchedule}>
               <div className="invoice-mode-toggle" role="group" aria-label="Schedule line source">
                 <button
