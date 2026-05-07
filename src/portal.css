@@ -2,6 +2,9 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--surface);
   color: var(--text-body);
 }
@@ -38,6 +41,15 @@
   max-width: 920px;
   margin: 0 auto;
   width: 100%;
+}
+
+/* Admin dashboard: edge-to-edge workspace, responsive */
+.portal-main--admin {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  padding: clamp(0.85rem, 2vw, 1.5rem) clamp(0.75rem, 2.5vw, 2rem);
+  box-sizing: border-box;
 }
 
 .panel {
@@ -267,14 +279,35 @@ table.data tbody tr:hover td {
 
 .admin-shell {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(12.5rem, 15rem) minmax(0, 1fr);
+  gap: clamp(0.75rem, 2vw, 1.5rem);
   align-items: start;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 1280px) {
+  .admin-shell {
+    grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 1600px) {
+  .admin-shell {
+    grid-template-columns: minmax(15rem, 18rem) minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+@media (min-width: 900px) and (max-width: 1199px) {
+  .admin-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 .admin-sidebar {
   position: sticky;
-  top: 84px;
+  top: clamp(4.5rem, 12vh, 5.5rem);
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
@@ -283,6 +316,9 @@ table.data tbody tr:hover td {
   border-radius: var(--radius-lg);
   background: var(--panel);
   box-shadow: var(--shadow-sm);
+  max-height: calc(100dvh - 5.5rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-sidebar-title {
@@ -319,6 +355,26 @@ table.data tbody tr:hover td {
 
 .admin-content {
   min-width: 0;
+  width: 100%;
+}
+
+.admin-content .table-scroll {
+  width: 100%;
+  margin: 0.5rem 0 0;
+}
+
+@media (min-width: 641px) {
+  .admin-content .invoices-table {
+    min-width: 58rem;
+  }
+
+  .admin-content .schedules-table {
+    min-width: 48rem;
+  }
+
+  .admin-content .contact-leads-table {
+    min-width: 44rem;
+  }
 }
 
 .admin-summary-grid {
@@ -824,6 +880,10 @@ button.btn-icon {
     padding: 1.1rem;
   }
 
+  .portal-main--admin {
+    padding: 1rem clamp(0.65rem, 2vw, 1.25rem);
+  }
+
   .panel {
     padding: 1.1rem 1rem;
   }
@@ -878,6 +938,10 @@ button.btn-icon {
 
   .portal-main {
     padding: 0.85rem;
+  }
+
+  .portal-main--admin {
+    padding: 0.75rem 0.65rem;
   }
 
   .panel h2 {
@@ -1117,7 +1181,7 @@ button.btn-icon {
 }
 
 .admin-inv-detail-cell {
-  max-width: 26rem;
+  max-width: min(40rem, 100%);
   font-size: 0.82rem;
   line-height: 1.4;
   vertical-align: top;

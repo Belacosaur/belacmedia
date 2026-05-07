@@ -605,7 +605,7 @@ export default function AdminDashboard() {
           </button>
         </div>
       </header>
-      <main className="portal-main">
+      <main className="portal-main portal-main--admin">
         {error ? <p className="error">{error}</p> : null}
         {banner?.type === 'ok' ? (
           <p className="banner-ok" role="status">
@@ -713,7 +713,7 @@ export default function AdminDashboard() {
             {contactLeads.length === 0 ? (
               <p className="panel-notice">No submissions yet.</p>
             ) : (
-              <div style={{ overflowX: 'auto', marginTop: '1rem' }}>
+              <div className="table-scroll" style={{ marginTop: '1rem' }}>
                 <table className="data clients-table contact-leads-table">
                   <thead>
                     <tr>
@@ -800,33 +800,35 @@ export default function AdminDashboard() {
                 </p>
               </div>
             ) : null}
-            <table className="data clients-table" style={{ marginTop: '1rem' }}>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Portal</th>
-                  <th />
-                </tr>
-              </thead>
-              <tbody>
-                {clients.map((c) => (
-                  <tr key={c.id}>
-                    <td>{c.name}</td>
-                    <td>{c.email}</td>
-                    <td>{c.hasPortalToken ? 'Ready' : '—'}</td>
-                    <td>
-                      <button type="button" className="btn btn-ghost" onClick={() => rotatePortal(c.id)}>
-                        Share portal link & QR
-                      </button>
-                      <button type="button" className="btn btn-ghost" onClick={() => deactivatePortal(c.id)}>
-                        Disable link
-                      </button>
-                    </td>
+            <div className="table-scroll" style={{ marginTop: '1rem' }}>
+              <table className="data clients-table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Portal</th>
+                    <th />
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {clients.map((c) => (
+                    <tr key={c.id}>
+                      <td>{c.name}</td>
+                      <td>{c.email}</td>
+                      <td>{c.hasPortalToken ? 'Ready' : '—'}</td>
+                      <td>
+                        <button type="button" className="btn btn-ghost" onClick={() => rotatePortal(c.id)}>
+                          Share portal link & QR
+                        </button>
+                        <button type="button" className="btn btn-ghost" onClick={() => deactivatePortal(c.id)}>
+                          Disable link
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             {share ? (
               <div className="panel" style={{ marginTop: '1rem' }}>
                 <h2>Client portal link</h2>
@@ -1168,20 +1170,21 @@ export default function AdminDashboard() {
                 Export CSV
               </button>
             </div>
-            <table className="data invoices-table">
-              <thead>
-                <tr>
-                  <th>Invoice</th>
-                  <th>Client</th>
-                  <th>What&apos;s billed</th>
-                  <th>Total</th>
-                  <th>Dates</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {invoices.map((i) => {
+            <div className="table-scroll">
+              <table className="data invoices-table">
+                <thead>
+                  <tr>
+                    <th>Invoice</th>
+                    <th>Client</th>
+                    <th>What&apos;s billed</th>
+                    <th>Total</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoices.map((i) => {
                   const lines = parseInvoiceLineItems(i.line_items)
                   const breakdown = formatAdminLineBreakdown(lines)
                   const coverage = extractCoveragePeriod(i.description)
@@ -1376,8 +1379,9 @@ export default function AdminDashboard() {
                   </tr>
                   )
                 })}
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </div>
               </>
             ) : null}
           </div>
@@ -1730,21 +1734,22 @@ export default function AdminDashboard() {
             {tab === 'schedules' ? (
               <>
             <h2 style={{ marginTop: '1.5rem' }}>Schedules</h2>
-            <table className="data schedules-table">
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Name</th>
-                  <th>Next run</th>
-                  <th>Cadence</th>
-                  <th>Due +days</th>
-                  <th>Per invoice</th>
-                  <th>Invoices sent</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {schedules.map((s) => (
+            <div className="table-scroll">
+              <table className="data schedules-table">
+                <thead>
+                  <tr>
+                    <th>Client</th>
+                    <th>Name</th>
+                    <th>Next run</th>
+                    <th>Cadence</th>
+                    <th>Due +days</th>
+                    <th>Per invoice</th>
+                    <th>Invoices sent</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {schedules.map((s) => (
                   <tr key={s.id}>
                     <td>{s.client_name}</td>
                     <td>{s.name}</td>
@@ -1795,9 +1800,10 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
               </>
             ) : null}
           </div>
