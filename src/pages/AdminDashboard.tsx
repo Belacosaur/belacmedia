@@ -90,6 +90,7 @@ export default function AdminDashboard() {
     scheduleDescription: '',
     customLines: [newCustomLine()],
     dueDaysAfterRun: 14,
+    leadDays: 0,
   }))
 
   const resolvedScheduleCadence = useMemo(() => {
@@ -382,6 +383,7 @@ export default function AdminDashboard() {
         intervalUnit: cadence.intervalUnit,
         intervalCount: cadence.intervalCount,
         dueDaysAfterRun: schForm.dueDaysAfterRun,
+        leadDays: schForm.leadDays,
       }
       const ol = schForm.occurrenceLimit.trim()
       if (ol) {
@@ -433,6 +435,7 @@ export default function AdminDashboard() {
         scheduleLineDescription: '',
         customLines: [newCustomLine()],
         scheduleDescription: '',
+        leadDays: 0,
       }))
       await load()
     } catch (err) {
@@ -1273,7 +1276,8 @@ export default function AdminDashboard() {
             <h2>Recurring or scheduled billing</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 0 }}>
               Each run creates one <strong>issued</strong> invoice. The due date is the run time plus the
-              offset below (default 14 days).
+              offset below (default 14 days). You can also generate it early so clients can pay ahead of
+              the run date.
             </p>
             <div className="panel-notice schedule-billing-notice" style={{ marginTop: '0.75rem' }}>
               <p style={{ margin: '0 0 0.5rem', fontWeight: 600 }}>How recurring works here</p>
@@ -1360,6 +1364,21 @@ export default function AdminDashboard() {
                       </option>
                     ))}
                   </select>
+                </label>
+                <label className="field">
+                  Generate early (days before run)
+                  <input
+                    type="number"
+                    min={0}
+                    max={366}
+                    value={schForm.leadDays}
+                    onChange={(e) =>
+                      setSchForm({
+                        ...schForm,
+                        leadDays: Math.max(0, Math.min(366, Number(e.target.value) || 0)),
+                      })
+                    }
+                  />
                 </label>
                 <label className="field">
                   Due days after run
@@ -1611,6 +1630,7 @@ export default function AdminDashboard() {
                   <th>Next run</th>
                   <th>Cadence</th>
                   <th>Due +days</th>
+                  <th>Early +days</th>
                   <th>Per invoice</th>
                   <th>Invoices sent</th>
                   <th>Actions</th>
@@ -1628,6 +1648,7 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td>{s.due_days_after_run ?? 14}</td>
+                    <td>{s.lead_days ?? 0}</td>
                     <td>
                       <strong>{formatAudCents(s.amount_cents)}</strong>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>each automated run</div>
