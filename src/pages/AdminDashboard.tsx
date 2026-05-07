@@ -84,8 +84,9 @@ export default function AdminDashboard() {
     intervalUnit: 'monthly',
     intervalCount: 1,
     occurrenceLimit: '',
-    mode: 'template' as 'template' | 'custom',
-    templateKey: 'default',
+    lineMode: 'simple' as 'simple' | 'advanced',
+    simpleAmountAud: '',
+    scheduleLineDescription: '',
     scheduleDescription: '',
     customLines: [newCustomLine()],
     dueDaysAfterRun: 14,
@@ -391,7 +392,7 @@ export default function AdminDashboard() {
         }
         body.occurrenceLimit = Math.floor(n)
       }
-      if (schForm.mode === 'custom') {
+      if (schForm.lineMode === 'advanced') {
         const lineItems = collectLineItemsFromRows(schForm.customLines)
         if (!lineItems) {
           setError('Schedule: add at least one valid line (description, qty, unit AUD).')
@@ -400,7 +401,19 @@ export default function AdminDashboard() {
         body.lineItems = lineItems
         body.description = schForm.scheduleDescription.trim() || null
       } else {
-        body.templateKey = schForm.templateKey
+        const cents = audToCents(schForm.simpleAmountAud)
+        if (cents <= 0) {
+          setError(
+            'Enter the amount for each invoice (ex‑GST line total), e.g. 250 for $250. GST is added automatically if enabled.',
+          )
+          return
+        }
+        const lineDesc =
+          schForm.scheduleLineDescription.trim() ||
+          schForm.name.trim() ||
+          'Scheduled services'
+        body.lineItems = [{ description: lineDesc, quantity: 1, unitPriceCents: cents }]
+        body.description = schForm.scheduleDescription.trim() || null
       }
       await apiJson('/api/admin/schedules', {
         method: 'POST',
@@ -415,6 +428,9 @@ export default function AdminDashboard() {
         cadencePreset: 'monthly_1',
         intervalUnit: 'monthly',
         intervalCount: 1,
+        lineMode: 'simple',
+        simpleAmountAud: '',
+        scheduleLineDescription: '',
         customLines: [newCustomLine()],
         scheduleDescription: '',
       }))
@@ -511,6 +527,24 @@ export default function AdminDashboard() {
     try {
       await apiJson(`/api/admin/invoices/${id}/remind`, { method: 'POST' })
       setBanner({ type: 'ok', text: 'Reminder sent.' })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed')
+    }
+  }
+
+  async function deleteSchedule(id: string) {
+    if (
+      !window.confirm(
+        'Delete this schedule permanently? Existing invoices are not deleted (their link to this automation is cleared).',
+      )
+    ) {
+      return
+    }
+    try {
+      await apiJson(`/api/admin/schedules/${id}`, { method: 'DELETE' })
+      setError('')
+      setBanner({ type: 'ok', text: 'Schedule deleted.' })
+      await load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed')
     }
@@ -1242,38 +1276,37 @@ export default function AdminDashboard() {
               offset below (default 14 days).
             </p>
             <div className="panel-notice schedule-billing-notice" style={{ marginTop: '0.75rem' }}>
-              <p style={{ margin: '0 0 0.5rem', fontWeight: 600 }}>Read this once</p>
+              <p style={{ margin: '0 0 0.5rem', fontWeight: 600 }}>How recurring works here</p>
               <ul style={{ margin: 0, paddingLeft: '1.15rem', fontSize: '0.82rem', lineHeight: 1.45 }}>
                 <li>
-                  <strong>Amount:</strong> With <strong>Use template</strong>, the dollar figure comes from
-                  the template (shown below when you pick one). To charge a different amount per run, switch
-                  to <strong>Custom lines</strong>.
+                  <strong>Monthly billing:</strong> choose <strong>Every month</strong>, enter your{' '}
+                  <strong>amount per invoice</strong> below — each run creates <strong>one separate invoice</strong>{' '}
+                  for that amount (not one giant multi‑month bill).
                 </li>
                 <li>
-                  <strong>Twelve monthly invoices</strong> means cadence <strong>Every month</strong>, and
-                  optionally <strong>Stop after 12 invoices</strong> — not “repeat every 12 months”.
+                  <strong>Stop after N invoices:</strong> use “Stop after” for e.g. 12 monthly invoices.
                 </li>
                 <li>
-                  “Repeat every N months” (advanced) stretches <strong>one invoice’s coverage</strong> across
-                  N months on the PDF. That is almost never what people mean by “12-month plan”.
+                  Avoid advanced “every N months” unless you intentionally want <strong>one invoice covering N
+                  months</strong>.
                 </li>
               </ul>
             </div>
             <form onSubmit={createSchedule}>
-              <div className="invoice-mode-toggle" role="group" aria-label="Schedule line source">
+              <div className="invoice-mode-toggle" role="group" aria-label="Schedule billing shape">
                 <button
                   type="button"
-                  className={schForm.mode === 'template' ? 'active' : ''}
-                  onClick={() => setSchForm((f) => ({ ...f, mode: 'template' }))}
+                  className={schForm.lineMode === 'simple' ? 'active' : ''}
+                  onClick={() => setSchForm((f) => ({ ...f, lineMode: 'simple' }))}
                 >
-                  Use template
+                  One amount per invoice
                 </button>
                 <button
                   type="button"
-                  className={schForm.mode === 'custom' ? 'active' : ''}
-                  onClick={() => setSchForm((f) => ({ ...f, mode: 'custom' }))}
+                  className={schForm.lineMode === 'advanced' ? 'active' : ''}
+                  onClick={() => setSchForm((f) => ({ ...f, lineMode: 'advanced' }))}
                 >
-                  Custom lines
+                  Multiple lines
                 </button>
               </div>
 
@@ -1414,75 +1447,56 @@ export default function AdminDashboard() {
                 </div>
               ) : null}
 
-              {schForm.mode === 'template' ? (
+              <label className="field" style={{ marginTop: '0.85rem', display: 'block', maxWidth: '36rem' }}>
+                Note on each invoice (optional)
+                <input
+                  value={schForm.scheduleDescription}
+                  onChange={(e) => setSchForm({ ...schForm, scheduleDescription: e.target.value })}
+                  placeholder="Shown on the PDF above coverage dates — e.g. retainer scope"
+                />
+              </label>
+
+              {schForm.lineMode === 'simple' ? (
                 <div style={{ marginTop: '0.85rem' }}>
-                  <div className="row" style={{ alignItems: 'flex-end' }}>
-                    <label className="field">
-                      Template
-                      <select
-                        value={schForm.templateKey}
-                        onChange={(e) => setSchForm({ ...schForm, templateKey: e.target.value })}
-                      >
-                        {templates.map((t) => (
-                          <option key={t.key} value={t.key}>
-                            {t.label}
-                          </option>
-                        ))}
-                      </select>
+                  <div className="row" style={{ alignItems: 'flex-end', flexWrap: 'wrap' }}>
+                    <label className="field" style={{ minWidth: '14rem', flex: '1 1 14rem' }}>
+                      Line title on invoice (optional)
+                      <input
+                        value={schForm.scheduleLineDescription}
+                        onChange={(e) =>
+                          setSchForm({ ...schForm, scheduleLineDescription: e.target.value })
+                        }
+                        placeholder={`Defaults to schedule label (${schForm.name.trim() || 'your label'})`}
+                      />
+                    </label>
+                    <label className="field" style={{ minWidth: '11rem' }}>
+                      Amount per invoice (AUD, ex‑GST line)
+                      <input
+                        type="text"
+                        inputMode="decimal"
+                        required
+                        value={schForm.simpleAmountAud}
+                        onChange={(e) => setSchForm({ ...schForm, simpleAmountAud: e.target.value })}
+                        placeholder="e.g. 250"
+                      />
                     </label>
                     <button type="submit" className="btn">
                       Save schedule
                     </button>
                   </div>
-                  {(() => {
-                    const tpl = templates.find((t) => t.key === schForm.templateKey)
-                    if (!tpl?.lineItems?.length) return null
-                    return (
-                      <div className="schedule-template-preview">
-                        <p style={{ margin: '0.65rem 0 0.35rem', fontWeight: 600, fontSize: '0.88rem' }}>
-                          Amount this schedule charges each run (from template)
-                        </p>
-                        <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.82rem' }}>
-                          {tpl.lineItems.map((row, idx) => (
-                            <li key={`${tpl.key}-${idx}`}>
-                              {row.description} ×{row.quantity} @ {formatAudCents(row.unitPriceCents)} →{' '}
-                              {formatAudCents(lineAmountCents(row.quantity, row.unitPriceCents))}
-                            </li>
-                          ))}
-                        </ul>
-                        <p style={{ margin: '0.45rem 0 0', fontSize: '0.82rem' }}>
-                          <strong>Subtotal:</strong> {formatAudCents(tpl.subtotalCents ?? 0)}
-                          {(tpl.taxCents ?? 0) > 0 ? (
-                            <>
-                              {' '}
-                              · <strong>GST:</strong> {formatAudCents(tpl.taxCents ?? 0)}
-                            </>
-                          ) : null}{' '}
-                          · <strong>Invoice total:</strong> {formatAudCents(tpl.totalCents ?? 0)}
-                        </p>
-                        <p style={{ margin: '0.35rem 0 0', fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                          Need a different figure? Switch to <strong>Custom lines</strong> and enter qty × unit
-                          AUD per run.
-                        </p>
-                      </div>
-                    )
-                  })()}
+                  <p style={{ margin: '0.5rem 0 0', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                    Preview line total:{' '}
+                    <strong>
+                      {formatAudCents(Math.max(0, audToCents(schForm.simpleAmountAud)))}
+                    </strong>{' '}
+                    per run (GST added on issue if enabled in Settings).
+                  </p>
                 </div>
               ) : (
                 <div className="custom-lines-block">
-                  <label className="field" style={{ marginTop: '0.75rem' }}>
-                    Note on generated invoices (optional)
-                    <input
-                      value={schForm.scheduleDescription}
-                      onChange={(e) =>
-                        setSchForm({ ...schForm, scheduleDescription: e.target.value })
-                      }
-                      placeholder="e.g. Weekly retainer — Acme"
-                    />
-                  </label>
-                  <p className="custom-lines-hint">
-                    Same line rules as manual invoices. Each run copies these lines into a new issued
-                    invoice.
+                  <p className="custom-lines-hint" style={{ marginTop: '0.85rem' }}>
+                    Each run copies these lines into a new invoice — same rules as manual invoices (qty × unit
+                    AUD).
                   </p>
                   <table className="data custom-lines-table">
                     <thead>
@@ -1588,7 +1602,7 @@ export default function AdminDashboard() {
                 </div>
               )}
             </form>
-            <h2 style={{ marginTop: '1.5rem' }}>Active schedules</h2>
+            <h2 style={{ marginTop: '1.5rem' }}>Schedules</h2>
             <table className="data schedules-table">
               <thead>
                 <tr>
@@ -1599,7 +1613,7 @@ export default function AdminDashboard() {
                   <th>Due +days</th>
                   <th>Per invoice</th>
                   <th>Invoices sent</th>
-                  <th>Active</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -1626,8 +1640,10 @@ export default function AdminDashboard() {
                       ) : null}
                     </td>
                     <td>
-                      {s.active ? 'yes' : 'no'}
-                      <div>
+                      <span style={{ fontSize: '0.82rem', fontWeight: 600 }}>
+                        {s.active ? 'Active' : 'Paused'}
+                      </span>
+                      <div style={{ marginTop: '0.35rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
                         <button
                           type="button"
                           className="btn btn-ghost"
@@ -1640,6 +1656,14 @@ export default function AdminDashboard() {
                           }}
                         >
                           {s.active ? 'Pause' : 'Resume'}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-ghost"
+                          style={{ fontSize: '0.72rem', color: '#b91c1c' }}
+                          onClick={() => deleteSchedule(s.id)}
+                        >
+                          Delete
                         </button>
                       </div>
                     </td>

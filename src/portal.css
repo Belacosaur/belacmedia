@@ -1193,7 +1193,7 @@ button.btn-icon {
   .schedules-table td:nth-child(5)::before { content: 'Due days'; }
   .schedules-table td:nth-child(6)::before { content: 'Per invoice'; }
   .schedules-table td:nth-child(7)::before { content: 'Invoices sent'; }
-  .schedules-table td:nth-child(8)::before { content: 'Active'; }
+  .schedules-table td:nth-child(8)::before { content: 'Actions'; }
 
   .contact-leads-table td:nth-child(1)::before { content: 'Received'; }
   .contact-leads-table td:nth-child(2)::before { content: 'Name'; }
