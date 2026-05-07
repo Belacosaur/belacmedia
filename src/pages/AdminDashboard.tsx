@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiBlob, apiJson, clearToken } from '../api'
 import BrandLogo from '../components/BrandLogo'
-import { formatAudCents, lineAmountCents } from '../formatMoney'
+import { formatAudCents } from '../formatMoney'
 import {
   collectLineItemsFromRows,
   defaultDueDate,
