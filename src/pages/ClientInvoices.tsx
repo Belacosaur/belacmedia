@@ -18,6 +18,10 @@ type UpcomingSchedule = {
   name: string
   next_run_at: string
   due_date: string
+  amount_cents: number
+  subtotal_cents?: number
+  tax_cents?: number
+  cadence?: string
 }
 
 function formatHistoryDate(iso: string): string {
@@ -94,14 +98,23 @@ function rowStatus(inv: Invoice): 'paid' | 'issued' | 'awaiting_proof' | 'void' 
 
 export default function ClientInvoices() {
   const [rows, setRows] = useState<Invoice[]>([])
-  const [upcoming, setUpcoming] = useState<UpcomingSchedule | null>(null)
+  const [upcomingList, setUpcomingList] = useState<UpcomingSchedule[]>([])
   const [error, setError] = useState('')
 
   useEffect(() => {
-    apiJson<{ invoices: Invoice[]; upcomingSchedule?: UpcomingSchedule | null }>('/api/client/invoices')
+    apiJson<{
+      invoices: Invoice[]
+      upcomingSchedules?: UpcomingSchedule[]
+      upcomingSchedule?: UpcomingSchedule | null
+    }>('/api/client/invoices')
       .then((r) => {
         setRows(r.invoices)
-        setUpcoming(r.upcomingSchedule || null)
+        const list = r.upcomingSchedules?.length
+          ? r.upcomingSchedules
+          : r.upcomingSchedule
+            ? [r.upcomingSchedule]
+            : []
+        setUpcomingList(list)
       })
       .catch((e) => setError(e instanceof Error ? e.message : 'Failed to load'))
   }, [])
@@ -110,16 +123,16 @@ export default function ClientInvoices() {
     <div className="panel billing-history-panel">
       <h2>Billing history</h2>
       <p className="billing-history-lead">
-        One row per invoice. When your plan runs each period, a new invoice appears here with that period’s
-        amount.
+        Upcoming charges show what will be invoiced next; issued invoices appear below with a link to view
+        and pay.
       </p>
       {error ? <p className="error">{error}</p> : null}
 
-      {!rows.length && !upcoming ? (
+      {!rows.length && !upcomingList.length ? (
         <p className="billing-history-empty">No invoices yet.</p>
       ) : (
         <ul className="billing-history-list" role="list">
-          {upcoming ? (
+          {upcomingList.map((upcoming) => (
             <li
               className="billing-history-row billing-history-row--scheduled"
               key={`scheduled-${upcoming.id}`}
@@ -130,14 +143,19 @@ export default function ClientInvoices() {
               </time>
               <div className="billing-history-desc-wrap">
                 <span className="billing-history-desc">{upcoming.name}</span>
-                <span className="billing-history-subline">Next run · due {upcoming.due_date}</span>
+                <span className="billing-history-subline">
+                  Next invoice (not issued yet)
+                  {upcoming.cadence ? ` · ${upcoming.cadence}` : ''} · due {upcoming.due_date}
+                </span>
               </div>
-              <span className="billing-history-amount billing-history-amount--dash" aria-label="Not yet issued">
-                —
+              <span className="billing-history-amount" title="Estimated total when issued">
+                ~{formatAudCents(upcoming.amount_cents)}
               </span>
-              <span className="billing-history-action billing-history-action--muted" />
+              <span className="billing-history-view" style={{ color: 'var(--text-muted)' }}>
+                Upcoming
+              </span>
             </li>
-          ) : null}
+          ))}
           {rows.map((i) => (
             <li className="billing-history-row" key={i.id}>
               <StatusIcon status={rowStatus(i)} />

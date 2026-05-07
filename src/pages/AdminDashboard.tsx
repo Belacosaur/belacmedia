@@ -42,11 +42,12 @@ type ContactLead = {
   createdAt: string
 }
 
+type AdminSection = 'dashboard' | 'compose' | 'invoices' | 'clients' | 'schedules' | 'settings' | 'contact'
+
 export default function AdminDashboard() {
   const nav = useNavigate()
-  const [tab, setTab] = useState<'contact' | 'clients' | 'invoices' | 'schedules' | 'settings'>(
-    'contact',
-  )
+  const [tab, setTab] = useState<AdminSection>('dashboard')
+  const [composerMode, setComposerMode] = useState<'oneoff' | 'recurring'>('oneoff')
   const [clients, setClients] = useState<Client[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [schedules, setSchedules] = useState<Schedule[]>([])
@@ -90,7 +91,6 @@ export default function AdminDashboard() {
     scheduleDescription: '',
     customLines: [newCustomLine()],
     dueDaysAfterRun: 14,
-    leadDays: 0,
   }))
 
   const resolvedScheduleCadence = useMemo(() => {
@@ -102,43 +102,48 @@ export default function AdminDashboard() {
       : cadencePresetToInterval(schForm.cadencePreset)
   }, [schForm.cadencePreset, schForm.intervalUnit, schForm.intervalCount])
 
+  const upcomingActiveSchedules = useMemo(() => {
+    return schedules
+      .filter((s) => s.active)
+      .slice()
+      .sort((a, b) => new Date(a.next_run_at).getTime() - new Date(b.next_run_at).getTime())
+  }, [schedules])
+
   const load = useCallback(async () => {
     setError('')
     try {
-      if (tab === 'contact') {
+      if (tab === 'dashboard' || tab === 'contact') {
         const r = await apiJson<{ leads: ContactLead[] }>('/api/admin/contact-leads')
         setContactLeads(r.leads)
       }
-      if (tab === 'clients') {
+      if (tab === 'dashboard' || tab === 'clients' || tab === 'compose' || tab === 'invoices' || tab === 'schedules') {
         const r = await apiJson<{ clients: Client[] }>('/api/admin/clients')
         setClients(r.clients)
       }
-      if (tab === 'invoices') {
+      if (tab === 'dashboard' || tab === 'invoices') {
         const qs = new URLSearchParams()
-        if (invoiceSearch.trim()) qs.set('search', invoiceSearch.trim())
-        if (invoiceStatusFilter) qs.set('status', invoiceStatusFilter)
-        const [r, t, cr] = await Promise.all([
+        if (tab === 'invoices') {
+          if (invoiceSearch.trim()) qs.set('search', invoiceSearch.trim())
+          if (invoiceStatusFilter) qs.set('status', invoiceStatusFilter)
+        }
+        const [r, schR] = await Promise.all([
           apiJson<{ invoices: Invoice[] }>(
             `/api/admin/invoices${qs.toString() ? `?${qs.toString()}` : ''}`,
           ),
-          apiJson<{ templates: Template[] }>('/api/admin/invoice-templates'),
-          apiJson<{ clients: Client[] }>('/api/admin/clients'),
+          apiJson<{ schedules: Schedule[] }>('/api/admin/schedules'),
         ])
         setInvoices(r.invoices)
-        setTemplates(t.templates)
-        setClients(cr.clients)
+        setSchedules(schR.schedules)
       }
-      if (tab === 'schedules') {
-        const [r, t, cr] = await Promise.all([
+      if (tab === 'schedules' || tab === 'compose') {
+        const [r, t] = await Promise.all([
           apiJson<{ schedules: Schedule[] }>('/api/admin/schedules'),
           apiJson<{ templates: Template[] }>('/api/admin/invoice-templates'),
-          apiJson<{ clients: Client[] }>('/api/admin/clients'),
         ])
         setSchedules(r.schedules)
         setTemplates(t.templates)
-        setClients(cr.clients)
       }
-      if (tab === 'settings') {
+      if (tab === 'settings' || tab === 'dashboard') {
         const r = await apiJson<{ organization: Record<string, string | null> }>(
           '/api/admin/organization',
         )
@@ -383,7 +388,6 @@ export default function AdminDashboard() {
         intervalUnit: cadence.intervalUnit,
         intervalCount: cadence.intervalCount,
         dueDaysAfterRun: schForm.dueDaysAfterRun,
-        leadDays: schForm.leadDays,
       }
       const ol = schForm.occurrenceLimit.trim()
       if (ol) {
@@ -435,7 +439,6 @@ export default function AdminDashboard() {
         scheduleLineDescription: '',
         customLines: [newCustomLine()],
         scheduleDescription: '',
-        leadDays: 0,
       }))
       await load()
     } catch (err) {
@@ -611,26 +614,94 @@ export default function AdminDashboard() {
         ) : null}
         {banner?.type === 'err' ? <p className="error">{banner.text}</p> : null}
 
-        <div className="tabs">
-          {(
-            [
-              ['contact', 'Website contact'],
-              ['clients', 'Clients'],
-              ['invoices', 'Invoices'],
-              ['schedules', 'Recurring'],
-              ['settings', 'Legal & payments'],
-            ] as const
-          ).map(([k, label]) => (
-            <button
-              key={k}
-              type="button"
-              className={tab === k ? 'active' : ''}
-              onClick={() => setTab(k)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        <div className="admin-shell">
+          <aside className="admin-sidebar">
+            <p className="admin-sidebar-title">Workspace</p>
+            {(
+              [
+                ['dashboard', 'Dashboard'],
+                ['compose', 'Create invoice'],
+                ['invoices', 'Invoices'],
+                ['clients', 'Accounts'],
+                ['schedules', 'Recurring schedules'],
+                ['settings', 'Settings'],
+                ['contact', 'Leads'],
+              ] as const
+            ).map(([k, label]) => (
+              <button
+                key={k}
+                type="button"
+                className={tab === k ? 'active' : ''}
+                onClick={() => setTab(k)}
+              >
+                {label}
+              </button>
+            ))}
+          </aside>
+
+          <section className="admin-content">
+        {tab === 'dashboard' ? (
+          <div className="panel">
+            <h2>Admin dashboard</h2>
+            <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginTop: 0 }}>
+              Quick view of accounts, invoices, recurring schedules, and inbound leads.
+            </p>
+            <div className="admin-summary-grid">
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Clients</div>
+                <div className="admin-summary-value">{clients.length}</div>
+              </div>
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Invoices</div>
+                <div className="admin-summary-value">{invoices.length}</div>
+              </div>
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Active schedules</div>
+                <div className="admin-summary-value">{schedules.filter((s) => s.active).length}</div>
+              </div>
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Website leads</div>
+                <div className="admin-summary-value">{contactLeads.length}</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '1rem' }}>
+              <button type="button" className="btn" onClick={() => setTab('compose')}>
+                Create invoice
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => setTab('invoices')}>
+                Manage invoices
+              </button>
+              <button type="button" className="btn btn-ghost" onClick={() => setTab('clients')}>
+                Manage accounts
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        {tab === 'compose' ? (
+          <div className="panel">
+            <h2>Create invoice</h2>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 0 }}>
+              One place for both one-off and recurring billing.
+            </p>
+            <div className="invoice-mode-toggle" role="group" aria-label="Invoice type">
+              <button
+                type="button"
+                className={composerMode === 'oneoff' ? 'active' : ''}
+                onClick={() => setComposerMode('oneoff')}
+              >
+                One-off
+              </button>
+              <button
+                type="button"
+                className={composerMode === 'recurring' ? 'active' : ''}
+                onClick={() => setComposerMode('recurring')}
+              >
+                Recurring
+              </button>
+            </div>
+          </div>
+        ) : null}
 
         {tab === 'contact' ? (
           <div className="panel">
@@ -774,10 +845,15 @@ export default function AdminDashboard() {
           </div>
         ) : null}
 
-        {tab === 'invoices' ? (
+        {tab === 'invoices' || (tab === 'compose' && composerMode === 'oneoff') ? (
           <div className="panel">
+            {tab === 'invoices' ? <h2 style={{ margin: 0 }}>Invoice management</h2> : null}
+            {tab === 'compose' ? (
+              <>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <h2 style={{ margin: 0 }}>{editingDraftId ? 'Edit draft invoice' : 'Create invoice'}</h2>
+              <h2 style={{ margin: 0 }}>
+                {editingDraftId ? 'Edit draft invoice' : tab === 'compose' ? 'One-off invoice' : 'Create invoice'}
+              </h2>
               {editingDraftId ? (
                 <>
                   <button type="button" className="btn btn-ghost" onClick={() => resetInvoiceForm()}>
@@ -1006,6 +1082,11 @@ export default function AdminDashboard() {
                 </div>
               )}
             </form>
+            {tab === 'compose' ? (
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
+                One-off invoice creation uses the same manual invoice pipeline, with optional draft-save.
+              </p>
+            ) : (
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '1rem' }}>
               <strong>Templates</strong> are presets in <code>invoiceTemplates.js</code> — each creates{' '}
               <strong>one invoice</strong> at the template line totals (not automatically split by month).{' '}
@@ -1015,6 +1096,35 @@ export default function AdminDashboard() {
               <strong>Drafts</strong> can be deleted from the list; <strong>issued</strong> invoices can be{' '}
               <strong>voided</strong> (hidden from clients, not payable). Paid invoices cannot be voided here.
             </p>
+            )}
+              </>
+            ) : null}
+            {tab === 'invoices' ? (
+              <>
+            {upcomingActiveSchedules.length ? (
+              <div className="panel-notice" style={{ marginTop: '1rem' }}>
+                <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem' }}>Upcoming from automation</h3>
+                <p style={{ margin: '0 0 0.75rem', fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+                  Not invoices yet — no invoice number until the run time passes and the billing job creates
+                  them. The client also sees these on their billing page as &quot;next invoice&quot;.
+                </p>
+                <ul style={{ margin: 0, paddingLeft: '1.1rem', fontSize: '0.85rem', lineHeight: 1.5 }}>
+                  {upcomingActiveSchedules.map((s) => {
+                    const due = new Date(s.next_run_at)
+                    due.setUTCDate(due.getUTCDate() + (s.due_days_after_run ?? 14))
+                    return (
+                      <li key={s.id}>
+                        <strong>{s.client_name ?? 'Client'}</strong> — {s.name}. Next run{' '}
+                        {new Date(s.next_run_at).toLocaleString()} (
+                        {scheduleCadenceShort(s.interval_unit, s.interval_count)}). Line total{' '}
+                        <strong>{formatAudCents(s.amount_cents)}</strong> ex‑GST (GST added when issued if
+                        enabled). Due date will be {due.toISOString().slice(0, 10)}.
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            ) : null}
             <h2 style={{ marginTop: '1.5rem' }}>All invoices</h2>
             <div className="row" style={{ marginBottom: '0.75rem' }}>
               <label className="field">
@@ -1268,17 +1378,25 @@ export default function AdminDashboard() {
                 })}
               </tbody>
             </table>
+              </>
+            ) : null}
           </div>
         ) : null}
 
-        {tab === 'schedules' ? (
+        {tab === 'schedules' || (tab === 'compose' && composerMode === 'recurring') ? (
           <div className="panel">
-            <h2>Recurring or scheduled billing</h2>
+            <h2>{tab === 'compose' ? 'Recurring invoice setup' : 'Recurring or scheduled billing'}</h2>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 0 }}>
               Each run creates one <strong>issued</strong> invoice. The due date is the run time plus the
-              offset below (default 14 days). You can also generate it early so clients can pay ahead of
-              the run date.
+              offset below (default 14 days). Upcoming charges are listed on the{' '}
+              <strong>Invoices</strong> tab before the first issue.
             </p>
+            {tab === 'compose' ? (
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginTop: '0.45rem' }}>
+                This creates the recurring automation. Invoice numbers are created only when each run is issued.
+              </p>
+            ) : null}
+            {tab === 'compose' ? (
             <div className="panel-notice schedule-billing-notice" style={{ marginTop: '0.75rem' }}>
               <p style={{ margin: '0 0 0.5rem', fontWeight: 600 }}>How recurring works here</p>
               <ul style={{ margin: 0, paddingLeft: '1.15rem', fontSize: '0.82rem', lineHeight: 1.45 }}>
@@ -1296,6 +1414,8 @@ export default function AdminDashboard() {
                 </li>
               </ul>
             </div>
+            ) : null}
+            {tab === 'compose' ? (
             <form onSubmit={createSchedule}>
               <div className="invoice-mode-toggle" role="group" aria-label="Schedule billing shape">
                 <button
@@ -1364,21 +1484,6 @@ export default function AdminDashboard() {
                       </option>
                     ))}
                   </select>
-                </label>
-                <label className="field">
-                  Generate early (days before run)
-                  <input
-                    type="number"
-                    min={0}
-                    max={366}
-                    value={schForm.leadDays}
-                    onChange={(e) =>
-                      setSchForm({
-                        ...schForm,
-                        leadDays: Math.max(0, Math.min(366, Number(e.target.value) || 0)),
-                      })
-                    }
-                  />
                 </label>
                 <label className="field">
                   Due days after run
@@ -1621,6 +1726,9 @@ export default function AdminDashboard() {
                 </div>
               )}
             </form>
+            ) : null}
+            {tab === 'schedules' ? (
+              <>
             <h2 style={{ marginTop: '1.5rem' }}>Schedules</h2>
             <table className="data schedules-table">
               <thead>
@@ -1630,7 +1738,6 @@ export default function AdminDashboard() {
                   <th>Next run</th>
                   <th>Cadence</th>
                   <th>Due +days</th>
-                  <th>Early +days</th>
                   <th>Per invoice</th>
                   <th>Invoices sent</th>
                   <th>Actions</th>
@@ -1648,7 +1755,6 @@ export default function AdminDashboard() {
                       </span>
                     </td>
                     <td>{s.due_days_after_run ?? 14}</td>
-                    <td>{s.lead_days ?? 0}</td>
                     <td>
                       <strong>{formatAudCents(s.amount_cents)}</strong>
                       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>each automated run</div>
@@ -1692,6 +1798,8 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+              </>
+            ) : null}
           </div>
         ) : null}
 
@@ -1818,6 +1926,8 @@ export default function AdminDashboard() {
             </form>
           </div>
         ) : null}
+          </section>
+        </div>
       </main>
     </div>
   )

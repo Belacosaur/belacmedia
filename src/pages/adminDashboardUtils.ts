@@ -44,7 +44,6 @@ export type Schedule = {
   next_run_at: string
   active: boolean
   due_days_after_run?: number
-  lead_days?: number
   client_name?: string
   occurrence_limit?: number | null
   runs_completed?: number
