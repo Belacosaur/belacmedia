@@ -426,7 +426,7 @@ export default function AdminDashboard() {
         body: JSON.stringify(body),
       })
       setError('')
-      setBanner({ type: 'ok', text: 'Schedule saved.' })
+      setBanner({ type: 'ok', text: 'Schedule saved. First invoice issued immediately.' })
       setSchForm((f) => ({
         ...f,
         name: '',
