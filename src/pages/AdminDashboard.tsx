@@ -556,6 +556,32 @@ export default function AdminDashboard() {
     }
   }
 
+  async function runScheduleNow(id: string, name: string) {
+    if (
+      !window.confirm(
+        `Issue the next invoice from "${name}" now?\n\nThis creates the upcoming invoice immediately, emails the client, and advances the schedule to its next run.`,
+      )
+    ) {
+      return
+    }
+    try {
+      const r = await apiJson<{ invoiceNumber?: string }>(
+        `/api/admin/schedules/${id}/run-now`,
+        { method: 'POST' },
+      )
+      setError('')
+      setBanner({
+        type: 'ok',
+        text: r.invoiceNumber
+          ? `Invoice ${r.invoiceNumber} issued from "${name}".`
+          : `Invoice issued from "${name}".`,
+      })
+      await load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to issue invoice')
+    }
+  }
+
   async function saveOrg(e: React.FormEvent) {
     e.preventDefault()
     try {
@@ -1776,6 +1802,16 @@ export default function AdminDashboard() {
                         {s.active ? 'Active' : 'Paused'}
                       </span>
                       <div style={{ marginTop: '0.35rem', display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                        {s.active ? (
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            style={{ fontSize: '0.72rem' }}
+                            onClick={() => runScheduleNow(s.id, s.name)}
+                          >
+                            Issue next invoice now
+                          </button>
+                        ) : null}
                         <button
                           type="button"
                           className="btn btn-ghost"
