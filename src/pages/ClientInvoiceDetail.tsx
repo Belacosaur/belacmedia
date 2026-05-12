@@ -5,6 +5,17 @@ import { formatAudCents, lineAmountCents } from '../formatMoney'
 
 type LineItem = { description: string; quantity: number; unitPriceCents: number }
 
+/** Australian display YYYY-MM-DD -> DD/MM/YYYY */
+function formatInvoicePeriodSlashed(start?: string | null, end?: string | null): string | null {
+  const a = start?.slice(0, 10)
+  const b = end?.slice(0, 10)
+  if (!a || !b) return null
+  const pa = a.split('-')
+  const pb = b.split('-')
+  if (pa.length !== 3 || pb.length !== 3) return null
+  return `${pa[2]}/${pa[1]}/${pa[0]} - ${pb[2]}/${pb[1]}/${pb[0]}`
+}
+
 type Invoice = {
   id: string
   invoice_number: string
@@ -15,6 +26,8 @@ type Invoice = {
   stripe_checkout_amount_cents?: number
   due_date: string
   description: string | null
+  period_start?: string | null
+  period_end?: string | null
   line_items?: LineItem[] | unknown
 }
 
@@ -191,6 +204,13 @@ export default function ClientInvoiceDetail() {
           </>
         )}
         <strong>Due date:</strong> {invoice.due_date} · <strong>Status:</strong> {invoice.status}
+        {formatInvoicePeriodSlashed(invoice.period_start, invoice.period_end) ? (
+          <>
+            {' '}
+            · <strong>Invoicing period:</strong>{' '}
+            {formatInvoicePeriodSlashed(invoice.period_start, invoice.period_end)}
+          </>
+        ) : null}
       </p>
       {invoice.status === 'awaiting_proof' ? (
         <p className="panel-notice">Payment submitted and awaiting confirmation by admin.</p>

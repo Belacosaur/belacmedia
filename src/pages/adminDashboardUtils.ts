@@ -22,6 +22,8 @@ export type Invoice = {
   amount_cents: number
   due_date: string
   description: string | null
+  period_start?: string | null
+  period_end?: string | null
   line_items?: { description: string; quantity: number; unitPriceCents: number }[]
   created_at?: string
   subtotal_cents?: number | null

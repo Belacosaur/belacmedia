@@ -71,6 +71,8 @@ export default function AdminDashboard() {
   const [invForm, setInvForm] = useState(() => ({
     clientId: '',
     dueDate: defaultDueDate(),
+    periodStart: '',
+    periodEnd: '',
     templateKey: 'default',
     mode: 'template' as 'template' | 'custom',
     invoiceDescription: '',
@@ -220,6 +222,8 @@ export default function AdminDashboard() {
     setInvForm({
       clientId: '',
       dueDate: defaultDueDate(),
+      periodStart: '',
+      periodEnd: '',
       templateKey: 'default',
       mode: 'template',
       invoiceDescription: '',
@@ -236,6 +240,8 @@ export default function AdminDashboard() {
     setInvForm({
       clientId: inv.client_id,
       dueDate: (inv.due_date || '').slice(0, 10) || defaultDueDate(),
+      periodStart: inv.period_start ? String(inv.period_start).slice(0, 10) : '',
+      periodEnd: inv.period_end ? String(inv.period_end).slice(0, 10) : '',
       templateKey: 'default',
       mode: 'custom',
       invoiceDescription: inv.description || '',
@@ -264,6 +270,8 @@ export default function AdminDashboard() {
       clientId: invForm.clientId,
       dueDate: invForm.dueDate,
       description: invForm.invoiceDescription.trim() || null,
+      periodStart: invForm.periodStart.trim(),
+      periodEnd: invForm.periodEnd.trim(),
     }
 
     try {
@@ -949,6 +957,29 @@ export default function AdminDashboard() {
                   />
                 </label>
               </div>
+
+              <div className="row" style={{ marginTop: '0.35rem' }}>
+                <label className="field">
+                  Invoicing period start (optional)
+                  <input
+                    type="date"
+                    value={invForm.periodStart}
+                    onChange={(e) => setInvForm({ ...invForm, periodStart: e.target.value })}
+                  />
+                </label>
+                <label className="field">
+                  Invoicing period end (optional)
+                  <input
+                    type="date"
+                    value={invForm.periodEnd}
+                    onChange={(e) => setInvForm({ ...invForm, periodEnd: e.target.value })}
+                  />
+                </label>
+              </div>
+              <p className="custom-lines-hint" style={{ marginTop: '-0.25rem', marginBottom: '0.5rem' }}>
+                Leave both blank if not needed. When set, both dates are required and appear on the PDF as{' '}
+                DD/MM/YYYY - DD/MM/YYYY (e.g. 06/05/2026 - 12/05/2026).
+              </p>
 
               <label className="field" style={{ marginTop: '0.5rem' }}>
                 Invoice note (optional, shown on PDF)
