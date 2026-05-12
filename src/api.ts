@@ -53,13 +53,40 @@ export async function apiJson<T>(
   return data as T
 }
 
-export async function apiBlob(path: string): Promise<Blob> {
+/** Parses filename from Content-Disposition (RFC 5987 filename* + quoted filename). */
+export function parseFilenameFromContentDisposition(header: string | null): string | undefined {
+  if (!header) return undefined
+  const star = /filename\*=(?:UTF-8''|utf-8'')([^;\s]+)/i.exec(header)
+  if (star) {
+    try {
+      return decodeURIComponent(star[1].replace(/(^")|("$)/g, ''))
+    } catch {
+      return star[1].replace(/(^")|("$)/g, '')
+    }
+  }
+  const q = /filename="((?:[^"\\]|\\.)*)"/i.exec(header)
+  if (q) return q[1].replace(/\\(.)/g, '$1')
+  const u = /filename=([^;\s]+)/i.exec(header)
+  if (u) return u[1].replace(/^"(.*)"$/, '$1')
+  return undefined
+}
+
+export type ApiBlobResult = { blob: Blob; filename: string | undefined }
+
+export async function apiBlobResult(path: string): Promise<ApiBlobResult> {
   const res = await fetch(`${API_BASE}${path}`, { headers: authHeaders() })
   if (!res.ok) {
     const t = await res.text()
     throw new Error(t || 'Download failed')
   }
-  return res.blob()
+  const filename = parseFilenameFromContentDisposition(res.headers.get('Content-Disposition'))
+  const blob = await res.blob()
+  return { blob, filename }
+}
+
+export async function apiBlob(path: string): Promise<Blob> {
+  const { blob } = await apiBlobResult(path)
+  return blob
 }
 
 export type ContactLeadInput = {

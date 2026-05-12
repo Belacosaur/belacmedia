@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
-import { apiBlob, apiJson } from '../api'
+import { apiBlobResult, apiJson } from '../api'
+import { invoicePdfDownloadName, receiptPdfDownloadName } from '../invoiceFilenames'
 import { formatAudCents, lineAmountCents } from '../formatMoney'
 
 type LineItem = { description: string; quantity: number; unitPriceCents: number }
@@ -123,22 +124,22 @@ export default function ClientInvoiceDetail() {
 
   async function downloadInvoice() {
     if (!id) return
-    const blob = await apiBlob(`/api/client/invoices/${id}/pdf`)
+    const { blob, filename } = await apiBlobResult(`/api/client/invoices/${id}/pdf`)
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `invoice-${invoice?.invoice_number || id}.pdf`
+    a.download = filename ?? invoicePdfDownloadName(invoice?.invoice_number ?? id)
     a.click()
     URL.revokeObjectURL(url)
   }
 
   async function downloadReceipt() {
     if (!id) return
-    const blob = await apiBlob(`/api/client/invoices/${id}/receipt/pdf`)
+    const { blob, filename } = await apiBlobResult(`/api/client/invoices/${id}/receipt/pdf`)
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `receipt-${invoice?.invoice_number || id}.pdf`
+    a.download = filename ?? receiptPdfDownloadName(invoice?.invoice_number ?? id)
     a.click()
     URL.revokeObjectURL(url)
   }

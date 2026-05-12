@@ -1,9 +1,10 @@
 import { QRCodeSVG } from 'qrcode.react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { apiBlob, apiJson, clearToken } from '../api'
+import { apiBlob, apiBlobResult, apiJson, clearToken } from '../api'
 import BrandLogo from '../components/BrandLogo'
 import { formatAudCents } from '../formatMoney'
+import { invoicePdfDownloadName } from '../invoiceFilenames'
 import {
   collectLineItemsFromRows,
   defaultDueDate,
@@ -1332,8 +1333,12 @@ export default function AdminDashboard() {
                         className="btn btn-ghost"
                         style={{ fontSize: '0.8rem', marginRight: '0.35rem' }}
                         onClick={async () => {
-                          const blob = await apiBlob(`/api/admin/invoices/${i.id}/pdf`)
-                          const url = URL.createObjectURL(blob)
+                          const { blob, filename } = await apiBlobResult(
+                            `/api/admin/invoices/${i.id}/pdf`,
+                          )
+                          const pdfName = filename ?? invoicePdfDownloadName(i.invoice_number)
+                          const file = new File([blob], pdfName, { type: 'application/pdf' })
+                          const url = URL.createObjectURL(file)
                           window.open(url, '_blank', 'noopener,noreferrer')
                           setTimeout(() => URL.revokeObjectURL(url), 60_000)
                         }}
