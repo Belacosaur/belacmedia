@@ -63,6 +63,7 @@ export default function AdminDashboard() {
   const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('')
 
   const [newClient, setNewClient] = useState({ email: '', name: '', password: '' })
+  const [showAddClientForm, setShowAddClientForm] = useState(false)
   const [clientEdit, setClientEdit] = useState<{
     id: string
     name: string
@@ -266,6 +267,7 @@ export default function AdminDashboard() {
         client: r.client,
       })
       setNewClient({ email: '', name: '', password: '' })
+      setShowAddClientForm(false)
       load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed')
@@ -289,6 +291,27 @@ export default function AdminDashboard() {
       await apiJson(`/api/admin/clients/${clientId}/portal`, { method: 'DELETE' })
       await load()
     } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed')
+    }
+  }
+
+  async function deleteClientAccount(client: Client) {
+    const label = client.name.trim() || client.email
+    if (
+      !window.confirm(
+        `Permanently delete account for "${label}"?\n\nThis removes their portal access and deletes all invoices and recurring schedules tied to this customer. This cannot be undone.`,
+      )
+    ) {
+      return
+    }
+    try {
+      await apiJson(`/api/admin/clients/${client.id}`, { method: 'DELETE' })
+      setClientEdit((e) => (e?.id === client.id ? null : e))
+      setError('')
+      setBanner({ type: 'ok', text: 'Client account removed.' })
+      await load()
+    } catch (err) {
+      setBanner(null)
       setError(err instanceof Error ? err.message : 'Failed')
     }
   }
@@ -901,36 +924,70 @@ export default function AdminDashboard() {
 
         {tab === 'clients' ? (
           <div className="panel">
-            <h2>Clients</h2>
-            <form onSubmit={createClient} className="row" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-              <label className="field">
-                Email
-                <input
-                  value={newClient.email}
-                  onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                  required
-                />
-              </label>
-              <label className="field">
-                Name
-                <input
-                  value={newClient.name}
-                  onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
-                  required
-                />
-              </label>
-              <label className="field">
-                Password (optional — min 8 chars if set)
-                <input
-                  type="password"
-                  value={newClient.password}
-                  onChange={(e) => setNewClient({ ...newClient, password: e.target.value })}
-                />
-              </label>
-              <button type="submit" className="btn">
-                Create client account
-              </button>
-            </form>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                marginBottom: showAddClientForm ? '1rem' : 0,
+              }}
+            >
+              <h2 style={{ margin: 0 }}>Clients</h2>
+              {!showAddClientForm ? (
+                <button type="button" className="btn" onClick={() => setShowAddClientForm(true)}>
+                  Add account
+                </button>
+              ) : null}
+            </div>
+            {showAddClientForm ? (
+              <form
+                onSubmit={createClient}
+                className="row"
+                style={{ flexDirection: 'column', alignItems: 'stretch' }}
+              >
+                <label className="field">
+                  Email
+                  <input
+                    value={newClient.email}
+                    onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
+                    required
+                  />
+                </label>
+                <label className="field">
+                  Name
+                  <input
+                    value={newClient.name}
+                    onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
+                    required
+                  />
+                </label>
+                <label className="field">
+                  Password (optional — min 8 chars if set)
+                  <input
+                    type="password"
+                    value={newClient.password}
+                    onChange={(e) => setNewClient({ ...newClient, password: e.target.value })}
+                  />
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  <button type="submit" className="btn">
+                    Create client account
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost"
+                    onClick={() => {
+                      setShowAddClientForm(false)
+                      setCreated(null)
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            ) : null}
             {created ? (
               <div className="panel-notice">
                 <p className="success">Client created.</p>
@@ -985,6 +1042,14 @@ export default function AdminDashboard() {
                           </button>
                           <button type="button" className="btn btn-ghost" onClick={() => deactivatePortal(c.id)}>
                             Disable link
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            style={{ color: '#b91c1c' }}
+                            onClick={() => deleteClientAccount(c)}
+                          >
+                            Remove account
                           </button>
                         </td>
                       </tr>
