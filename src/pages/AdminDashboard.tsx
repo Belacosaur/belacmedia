@@ -112,6 +112,43 @@ export default function AdminDashboard() {
       .sort((a, b) => new Date(a.next_run_at).getTime() - new Date(b.next_run_at).getTime())
   }, [schedules])
 
+  const invoiceMoneySummary = useMemo(() => {
+    const today = new Date().toISOString().slice(0, 10)
+    let totalInvoicedCents = 0
+    let totalPaidCents = 0
+    let overdueOutstandingCents = 0
+    let upcomingOutstandingCents = 0
+
+    for (const inv of invoices) {
+      if (inv.status === 'draft' || inv.status === 'void') continue
+
+      totalInvoicedCents += Number(inv.amount_cents) || 0
+
+      if (inv.status === 'paid') {
+        const paid =
+          inv.amount_paid_cents != null && Number.isFinite(Number(inv.amount_paid_cents))
+            ? Number(inv.amount_paid_cents)
+            : Number(inv.amount_cents) || 0
+        totalPaidCents += paid
+        continue
+      }
+
+      if (inv.status === 'issued' || inv.status === 'awaiting_proof') {
+        const due = (inv.due_date || '').slice(0, 10)
+        const amt = Number(inv.amount_cents) || 0
+        if (due && due < today) overdueOutstandingCents += amt
+        else upcomingOutstandingCents += amt
+      }
+    }
+
+    return {
+      totalInvoicedCents,
+      totalPaidCents,
+      overdueOutstandingCents,
+      upcomingOutstandingCents,
+    }
+  }, [invoices])
+
   const load = useCallback(async () => {
     setError('')
     try {
@@ -456,14 +493,20 @@ export default function AdminDashboard() {
     }
   }
 
-  async function markPaid(id: string, paymentMethod: 'payid' | 'bank_transfer' | 'stripe') {
+  async function markPaid(
+    id: string,
+    paymentMethod: 'payid' | 'bank_transfer' | 'stripe' | 'manual',
+  ) {
     try {
       await apiJson(`/api/admin/invoices/${id}/mark-paid`, {
         method: 'POST',
         body: JSON.stringify({ paymentMethod }),
       })
+      setError('')
+      setBanner({ type: 'ok', text: 'Invoice marked paid.' })
       load()
     } catch (err) {
+      setBanner(null)
       setError(err instanceof Error ? err.message : 'Failed')
     }
   }
@@ -697,6 +740,39 @@ export default function AdminDashboard() {
               <div className="admin-summary-card">
                 <div className="admin-summary-label">Website leads</div>
                 <div className="admin-summary-value">{contactLeads.length}</div>
+              </div>
+            </div>
+            <h3 style={{ fontSize: '1rem', marginTop: '1.5rem', marginBottom: '0.35rem' }}>
+              Invoice money
+            </h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: 0 }}>
+              Totals exclude drafts and voids. Outstanding is unpaid issued invoices (plus awaiting
+              confirmation), split by whether the due date has passed.
+            </p>
+            <div className="admin-summary-grid">
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Total invoiced</div>
+                <div className="admin-summary-value">
+                  {formatAudCents(invoiceMoneySummary.totalInvoicedCents)}
+                </div>
+              </div>
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Total paid</div>
+                <div className="admin-summary-value">
+                  {formatAudCents(invoiceMoneySummary.totalPaidCents)}
+                </div>
+              </div>
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Outstanding (overdue)</div>
+                <div className="admin-summary-value">
+                  {formatAudCents(invoiceMoneySummary.overdueOutstandingCents)}
+                </div>
+              </div>
+              <div className="admin-summary-card">
+                <div className="admin-summary-label">Outstanding (upcoming)</div>
+                <div className="admin-summary-value">
+                  {formatAudCents(invoiceMoneySummary.upcomingOutstandingCents)}
+                </div>
               </div>
             </div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem', marginTop: '1rem' }}>
@@ -1375,6 +1451,14 @@ export default function AdminDashboard() {
                       ) : null}
                       {i.status !== 'paid' && i.status !== 'void' && i.status !== 'draft' ? (
                         <>
+                          <button
+                            type="button"
+                            className="btn"
+                            style={{ fontSize: '0.75rem' }}
+                            onClick={() => markPaid(i.id, 'manual')}
+                          >
+                            Mark paid
+                          </button>
                           <button
                             type="button"
                             className="btn btn-ghost"

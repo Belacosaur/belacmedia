@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { apiBlobResult, apiJson } from '../api'
-import { invoicePdfDownloadName, receiptPdfDownloadName } from '../invoiceFilenames'
+import { invoicePdfDownloadName } from '../invoiceFilenames'
 import { formatAudCents, lineAmountCents } from '../formatMoney'
 
 type LineItem = { description: string; quantity: number; unitPriceCents: number }
@@ -133,17 +133,6 @@ export default function ClientInvoiceDetail() {
     URL.revokeObjectURL(url)
   }
 
-  async function downloadReceipt() {
-    if (!id) return
-    const { blob, filename } = await apiBlobResult(`/api/client/invoices/${id}/receipt/pdf`)
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = filename ?? receiptPdfDownloadName(invoice?.invoice_number ?? id)
-    a.click()
-    URL.revokeObjectURL(url)
-  }
-
   const lineItems = useMemo((): LineItem[] => {
     const raw = invoice?.line_items
     if (!invoice || !Array.isArray(raw)) return []
@@ -263,11 +252,6 @@ export default function ClientInvoiceDetail() {
         <button type="button" className="btn" onClick={() => downloadInvoice()}>
           Download invoice PDF
         </button>
-        {paid ? (
-          <button type="button" className="btn btn-ghost" onClick={() => downloadReceipt()}>
-            Download receipt
-          </button>
-        ) : null}
       </div>
 
       {!paid ? (
@@ -313,8 +297,7 @@ export default function ClientInvoiceDetail() {
                 <input value={note} onChange={(e) => setNote(e.target.value)} />
               </label>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                After you pay via PayID or transfer, submit here. We will confirm and issue your
-                receipt.
+                After you pay via PayID or transfer, submit here so we can match your payment.
               </p>
               <button type="button" className="btn btn-ghost" disabled={busy} onClick={() => offlinePaid()}>
                 I have paid via PayID / bank transfer

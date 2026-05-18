@@ -20,6 +20,8 @@ export type Invoice = {
   invoice_number: string
   status: string
   amount_cents: number
+  /** Gross collected amount when paid (e.g. card incl. fees). */
+  amount_paid_cents?: number | null
   due_date: string
   description: string | null
   period_start?: string | null
