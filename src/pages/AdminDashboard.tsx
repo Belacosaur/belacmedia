@@ -1,5 +1,5 @@
 import { QRCodeSVG } from 'qrcode.react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiBlob, apiBlobResult, apiJson, clearToken } from '../api'
 import BrandLogo from '../components/BrandLogo'
@@ -63,6 +63,12 @@ export default function AdminDashboard() {
   const [invoiceStatusFilter, setInvoiceStatusFilter] = useState('')
 
   const [newClient, setNewClient] = useState({ email: '', name: '', password: '' })
+  const [clientEdit, setClientEdit] = useState<{
+    id: string
+    name: string
+    email: string
+    password: string
+  } | null>(null)
   const [created, setCreated] = useState<{
     portalToken?: string
     temporaryPassword?: string
@@ -206,6 +212,37 @@ export default function AdminDashboard() {
   useEffect(() => {
     void Promise.resolve().then(() => load())
   }, [load])
+
+  async function saveClientEdit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!clientEdit) return
+    try {
+      const body: { name: string; email: string; password?: string } = {
+        name: clientEdit.name.trim(),
+        email: clientEdit.email.trim(),
+      }
+      const pw = clientEdit.password.trim()
+      if (pw.length > 0) {
+        if (pw.length < 8) {
+          setBanner(null)
+          setError('New password must be at least 8 characters.')
+          return
+        }
+        body.password = pw
+      }
+      await apiJson(`/api/admin/clients/${clientEdit.id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+      })
+      setClientEdit(null)
+      setError('')
+      setBanner({ type: 'ok', text: 'Client account updated.' })
+      await load()
+    } catch (err) {
+      setBanner(null)
+      setError(err instanceof Error ? err.message : 'Failed')
+    }
+  }
 
   async function createClient(e: React.FormEvent) {
     e.preventDefault()
@@ -923,19 +960,99 @@ export default function AdminDashboard() {
                 </thead>
                 <tbody>
                   {clients.map((c) => (
-                    <tr key={c.id}>
-                      <td>{c.name}</td>
-                      <td>{c.email}</td>
-                      <td>{c.hasPortalToken ? 'Ready' : '—'}</td>
-                      <td>
-                        <button type="button" className="btn btn-ghost" onClick={() => rotatePortal(c.id)}>
-                          Share portal link & QR
-                        </button>
-                        <button type="button" className="btn btn-ghost" onClick={() => deactivatePortal(c.id)}>
-                          Disable link
-                        </button>
-                      </td>
-                    </tr>
+                    <Fragment key={c.id}>
+                      <tr>
+                        <td>{c.name}</td>
+                        <td>{c.email}</td>
+                        <td>{c.hasPortalToken ? 'Ready' : '—'}</td>
+                        <td style={{ whiteSpace: 'normal' }}>
+                          <button
+                            type="button"
+                            className="btn btn-ghost"
+                            onClick={() =>
+                              setClientEdit({
+                                id: c.id,
+                                name: c.name,
+                                email: c.email,
+                                password: '',
+                              })
+                            }
+                          >
+                            Edit account
+                          </button>
+                          <button type="button" className="btn btn-ghost" onClick={() => rotatePortal(c.id)}>
+                            Share portal link & QR
+                          </button>
+                          <button type="button" className="btn btn-ghost" onClick={() => deactivatePortal(c.id)}>
+                            Disable link
+                          </button>
+                        </td>
+                      </tr>
+                      {clientEdit?.id === c.id ? (
+                        <tr className="clients-edit-row">
+                          <td colSpan={4}>
+                            <form
+                              onSubmit={saveClientEdit}
+                              className="row"
+                              style={{
+                                flexDirection: 'column',
+                                alignItems: 'stretch',
+                                gap: '0.65rem',
+                                padding: '0.75rem 0',
+                                maxWidth: '28rem',
+                              }}
+                            >
+                              <p style={{ margin: 0, fontWeight: 600 }}>Edit customer account</p>
+                              <label className="field">
+                                Name
+                                <input
+                                  value={clientEdit.name}
+                                  onChange={(e) =>
+                                    setClientEdit({ ...clientEdit, name: e.target.value })
+                                  }
+                                  required
+                                />
+                              </label>
+                              <label className="field">
+                                Email
+                                <input
+                                  type="email"
+                                  autoComplete="off"
+                                  value={clientEdit.email}
+                                  onChange={(e) =>
+                                    setClientEdit({ ...clientEdit, email: e.target.value })
+                                  }
+                                  required
+                                />
+                              </label>
+                              <label className="field">
+                                New password (optional — min 8 chars if changing)
+                                <input
+                                  type="password"
+                                  autoComplete="new-password"
+                                  value={clientEdit.password}
+                                  onChange={(e) =>
+                                    setClientEdit({ ...clientEdit, password: e.target.value })
+                                  }
+                                />
+                              </label>
+                              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                <button type="submit" className="btn">
+                                  Save changes
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn btn-ghost"
+                                  onClick={() => setClientEdit(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </form>
+                          </td>
+                        </tr>
+                      ) : null}
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
